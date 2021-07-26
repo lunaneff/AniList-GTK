@@ -1,0 +1,7 @@
+data/ch.laurinneff.AniList-GTK.desktop.in
+data/ch.laurinneff.AniList-GTK.appdata.xml.in
+data/ch.laurinneff.AniList-GTK.gschema.xml
+src/MainWindow.ui
+src/AnilistGtkApp.vala
+src/MainWindow.vala
+
