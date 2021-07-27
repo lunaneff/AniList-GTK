@@ -1,4 +1,4 @@
-/* window.vala
+/* MainWindow.vala
  *
  * Copyright 2021 Laurin Neff
  *

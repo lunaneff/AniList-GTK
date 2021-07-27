@@ -1,4 +1,4 @@
-/* main.vala
+/* AnilistGtkApp.vala
  *
  * Copyright 2021 Laurin Neff
  *
