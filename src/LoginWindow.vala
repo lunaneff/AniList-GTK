@@ -1,4 +1,4 @@
-/* MainWindow.vala
+/* LoginWindow.vala
  *
  * Copyright 2021 Laurin Neff <laurin@laurinneff.ch>
  *
@@ -19,11 +19,22 @@
  */
 
 namespace AnilistGtk {
-	[GtkTemplate (ui = "/ch/laurinneff/AniList-GTK/MainWindow.ui")]
-	public class MainWindow : Adw.ApplicationWindow {
-		public MainWindow(Gtk.Application app) {
-			Object (application: app);
-		}
-	}
-}
+	[GtkTemplate (ui = "/ch/laurinneff/AniList-GTK/LoginWindow.ui")]
+    public class LoginWindow : Adw.ApplicationWindow {
+        AnilistGtkApp app;
 
+		public LoginWindow(AnilistGtkApp app) {
+			Object (application: app);
+		    this.app = app;
+		}
+
+        [GtkCallback]
+		public void open_browser_login() {
+		    try {
+                AppInfo.launch_default_for_uri(AnilistClient.OAUTH_URI, null);
+            } catch(Error e) {
+                error(e.message);
+            }
+		}
+    }
+}

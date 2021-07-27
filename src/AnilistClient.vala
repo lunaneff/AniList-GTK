@@ -1,4 +1,4 @@
-/* MainWindow.vala
+/* AniList.vala
  *
  * Copyright 2021 Laurin Neff <laurin@laurinneff.ch>
  *
@@ -19,11 +19,16 @@
  */
 
 namespace AnilistGtk {
-	[GtkTemplate (ui = "/ch/laurinneff/AniList-GTK/MainWindow.ui")]
-	public class MainWindow : Adw.ApplicationWindow {
-		public MainWindow(Gtk.Application app) {
-			Object (application: app);
-		}
-	}
+    public class AnilistClient : Object {
+        public const int OAUTH_CLIENT_ID = 5986;
+        // Not const because valac wouldn't compile with the template string
+        public static string OAUTH_URI = @"https://anilist.co/api/v2/oauth/authorize?client_id=$OAUTH_CLIENT_ID&response_type=token";
+
+        public bool is_logged_in {
+            get {
+                return false;
+            }
+        }
+    }
 }
 

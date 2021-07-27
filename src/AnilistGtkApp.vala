@@ -1,6 +1,6 @@
-/* AnilistGtkApp.vala
+/* AniListGtkApp.vala
  *
- * Copyright 2021 Laurin Neff
+ * Copyright 2021 Laurin Neff <laurin@laurinneff.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,19 +14,42 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 namespace AnilistGtk {
     public class AnilistGtkApp : Gtk.Application {
+        public AnilistClient client;
+
+        protected AnilistGtkApp() {
+            Object (application_id: "ch.laurinneff.anilist-gtk", flags: ApplicationFlags.HANDLES_OPEN);
+        }
+
         protected override void activate() {
             add_actions();
 
-            var win = active_window;
-            if(win == null) {
-                win = new MainWindow(this);
+            client = new AnilistClient();
+            if(!client.is_logged_in) {
+                open_login_window();
             }
-            win.present();
+            else {
+                open_main_window();
+
+            }
         }
+
+        public override void open (File[] files, string hint) {
+		    // NOTE: when doing a longer-lasting action here that returns
+		    //  to the mainloop, you should use g_application_hold() and
+		    //  g_application_release() to keep the application alive until
+		    //  the action is completed.
+
+		    foreach (File file in files) {
+			    string uri = file.get_uri ();
+			    print (@"$uri\n");
+		    }
+	    }
 
         protected void add_actions() {
             var quit_action = new SimpleAction("quit", null);
@@ -64,6 +87,20 @@ namespace AnilistGtk {
             });
             set_accels_for_action("app.settings", {"<Control>comma"});
             add_action(settings_action);
+        }
+
+        protected void open_login_window() {
+            message("open login window");
+            var win = new LoginWindow(this);
+            win.present();
+        }
+
+        protected void open_main_window() {
+            var win = active_window;
+            if(win == null) {
+                win = new MainWindow(this);
+            }
+            win.present();
         }
 
         public static int main(string[] args) {

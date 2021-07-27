@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.2.1"/>
+  <requires lib="libadwaita" version="1.0.0-alpha.2"/>
+  <template class="AnilistGtkLoginWindow" parent="AdwApplicationWindow">
+    <property name="title" translatable="true">AniList-GTK - Login</property>
+    <property name="can-focus">False</property>
+    <property name="default-width">360</property>
+    <property name="default-height">600</property>
+    <property name="resizable">false</property>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="AdwHeaderBar">
+            <child type="title">
+              <object class="AdwWindowTitle">
+                <property name="title" translatable="true">AniList-GTK</property>
+                <property name="subtitle" translatable="true">Login</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="label">Open Browser</property>
+            <signal name="clicked" handler="open_browser_login"/>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

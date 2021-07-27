@@ -1,6 +1,8 @@
 anilist_gtk_sources = [
   'AnilistGtkApp.vala',
   'MainWindow.vala',
+  'LoginWindow.vala',
+  'AnilistClient.vala',
 ]
 
 anilist_gtk_deps = [

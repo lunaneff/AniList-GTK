@@ -1,8 +1,9 @@
 [Desktop Entry]
-Name=anilist-gtk
-Exec=anilist-gtk
+Name=AniList-GTK
+Exec=anilist-gtk %u
 Icon=ch.laurinneff.AniList-GTK
 Terminal=false
 Type=Application
 Categories=GTK;
 StartupNotify=true
+MimeType=x-scheme-handler/anilist-gtk;
