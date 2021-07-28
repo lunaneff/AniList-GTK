@@ -23,7 +23,7 @@ namespace AnilistGtk {
         public AnilistClient client;
 
         protected AnilistGtkApp() {
-            Object (application_id: "ch.laurinneff.anilist-gtk", flags: ApplicationFlags.HANDLES_OPEN);
+            Object (application_id: "ch.laurinneff.AniList-GTK", flags: ApplicationFlags.HANDLES_OPEN);
         }
 
         protected override void activate() {
