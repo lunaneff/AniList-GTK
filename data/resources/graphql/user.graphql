@@ -1,0 +1,11 @@
+{
+  Viewer {
+    id
+    name
+    avatar {
+      large
+      medium
+    }
+  }
+}
+

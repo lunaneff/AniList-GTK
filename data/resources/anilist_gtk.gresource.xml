@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/ch/laurinneff/AniList-GTK">
+    <file>ui/MainWindow.ui</file>
+    <file>ui/LoginWindow.ui</file>
+
+    <file>graphql/user.graphql</file>
+    <file>graphql/media_list.graphql</file>
+  </gresource>
+</gresources>

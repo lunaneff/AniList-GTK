@@ -19,10 +19,32 @@
  */
 
 namespace AnilistGtk {
-	[GtkTemplate (ui = "/ch/laurinneff/AniList-GTK/MainWindow.ui")]
+	[GtkTemplate (ui = "/ch/laurinneff/AniList-GTK/ui/MainWindow.ui")]
 	public class MainWindow : Adw.ApplicationWindow {
-		public MainWindow(Gtk.Application app) {
+	    private AnilistClient client;
+
+		public MainWindow(Gtk.Application app, AnilistClient client) {
 			Object (application: app);
+			this.client = client;
+			loadData.begin();
+		}
+
+		public async void loadData() {
+		    var user = yield client.get_user_info();
+		    message("username: %s", user.name);
+		    var animeLists = yield client.get_media_lists(user.name, MediaType.ANIME);
+		    foreach(var animeList in animeLists) {
+		        message ("Anime list: %s", animeList.name);
+		        foreach(var mediaListEntry in animeList) {
+		            message(
+		                "entry id: %i, title: %s, progress: %i/%i",
+		                mediaListEntry.id,
+		                mediaListEntry.media.title.userPreferred,
+		                mediaListEntry.progress,
+		                mediaListEntry.media.episodes
+		            );
+		        }
+		    }
 		}
 	}
 }

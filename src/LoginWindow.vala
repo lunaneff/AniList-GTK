@@ -19,7 +19,7 @@
  */
 
 namespace AnilistGtk {
-	[GtkTemplate (ui = "/ch/laurinneff/AniList-GTK/LoginWindow.ui")]
+	[GtkTemplate (ui = "/ch/laurinneff/AniList-GTK/ui/LoginWindow.ui")]
     public class LoginWindow : Adw.ApplicationWindow {
         AnilistGtkApp app;
 

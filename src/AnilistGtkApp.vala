@@ -29,14 +29,20 @@ namespace AnilistGtk {
         protected override void activate() {
             add_actions();
 
-            client = new AnilistClient();
-            if(!client.is_logged_in) {
-                open_login_window();
-            }
-            else {
-                open_main_window();
+            client = new AnilistClient(this);
 
-            }
+            hold();
+            client.get_token.begin((obj, async_res) => {
+                client.get_token.end(async_res);
+                release();
+                client.get_user_info.begin();
+
+                if(client.anilist_token == null) {
+                    open_login_window();
+                } else {
+                    open_main_window();
+                }
+            });
         }
 
         public override void open (File[] files, string hint) {
@@ -46,8 +52,18 @@ namespace AnilistGtk {
 		    //  the action is completed.
 
 		    foreach (File file in files) {
-			    string uri = file.get_uri ();
-			    print (@"$uri\n");
+                if(file.get_uri_scheme() == "anilist-gtk") {
+                    try {
+                        var uri = Uri.parse(file.get_uri(), UriFlags.NONE);
+                        var params = Uri.parse_params(uri.get_fragment());
+
+                        client.store_token.begin(params.get("access_token"));
+                    } catch(UriError e) {
+                        error("can't parse uri: %s", e.message);
+                    }
+                } else {
+                    error("unknown uri scheme");
+                }
 		    }
 	    }
 
@@ -98,7 +114,7 @@ namespace AnilistGtk {
         protected void open_main_window() {
             var win = active_window;
             if(win == null) {
-                win = new MainWindow(this);
+                win = new MainWindow(this, client);
             }
             win.present();
         }
