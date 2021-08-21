@@ -46,18 +46,18 @@
             ]
         },
         {
-            "name": "libadwaita",
-            "buildsystem": "meson",
-            "builddir": true,
-            "config-opts": [
+            "name" : "libadwaita",
+            "buildsystem" : "meson",
+            "builddir" : true,
+            "config-opts" : [
                 "-Dexamples=false",
                 "-Dtests=false"
             ],
-            "sources": [
+            "sources" : [
                 {
-                    "type": "git",
-                    "url": "https://gitlab.gnome.org/GNOME/libadwaita.git",
-                    "branch": "main"
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/libadwaita.git",
+                    "branch" : "main"
                 }
             ]
         },
@@ -68,9 +68,12 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "file:///home/laurin/Projekte/anilist-gtk"
+                    "url" : "."
                 }
             ]
         }
-    ]
+    ],
+    "build-options" : {
+        "env" : {        }
+    }
 }
