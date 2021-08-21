@@ -24,80 +24,12 @@
                 <child type="end">
                   <object class="GtkMenuButton">
                     <property name="icon-name">open-menu-symbolic</property>
-                    <!--<property name="popover">app-menu</property>-->
                     <property name="menu-model">app-menu</property>
                   </object>
                 </child>
               </object>
             </child>
             <child>
-              <!--<object class="GtkScrolledWindow">
-                <child>
-                  <object class="GtkListBox">
-                    <property name="vexpand">true</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">horizontal</property>
-                        <property name="margin-top">12</property>
-                        <property name="margin-bottom">12</property>
-                        <property name="margin-start">12</property>
-                        <property name="margin-end">12</property>
-                        <property name="spacing">12</property>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="icon-name">system-search-symbolic</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="label" translatable="true">Search</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">horizontal</property>
-                        <property name="margin-top">12</property>
-                        <property name="margin-bottom">12</property>
-                        <property name="margin-start">12</property>
-                        <property name="margin-end">12</property>
-                        <property name="spacing">12</property>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="icon-name">video-display-symbolic</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="label" translatable="true">Anime</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">horizontal</property>
-                        <property name="margin-top">12</property>
-                        <property name="margin-bottom">12</property>
-                        <property name="margin-start">12</property>
-                        <property name="margin-end">12</property>
-                        <property name="spacing">12</property>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="icon-name">accessories-dictionary-symbolic</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="label" translatable="true">Manga</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-              </object>-->
               <object class="GtkStackSidebar">
                 <property name="stack">main_stack</property>
                 <property name="vexpand">true</property>
@@ -120,7 +52,6 @@
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="AdwHeaderBar">
-                        <!--<property name="centering-policy">strict</property>-->
                         <binding name="show-start-title-buttons">
                           <lookup name="folded">leaflet</lookup>
                         </binding>
@@ -182,7 +113,6 @@
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="AdwHeaderBar">
-                        <!--<property name="centering-policy">strict</property>-->
                         <binding name="show-start-title-buttons">
                           <lookup name="folded">leaflet</lookup>
                         </binding>
@@ -355,7 +285,6 @@
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="AdwHeaderBar">
-                        <!--<property name="centering-policy">strict</property>-->
                         <binding name="show-start-title-buttons">
                           <lookup name="folded">leaflet</lookup>
                         </binding>
