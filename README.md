@@ -35,6 +35,8 @@ $ flatpak-builder build-dir ch.laurinneff.AniList-GTK.json --force-clean --user 
 ```
 
 ### Windows & macOS
-It's probably possible to run this on Windows & macOS, but you're on your own
-(for now at least)
-
+~~It's probably possible to run this on Windows & macOS, but you're on your own
+(for now at least)~~  
+It's currently impossible to run this on Windows & macOS, because of the
+dependency on Libsecret. I'll probably add another method of storing the token
+in the future
