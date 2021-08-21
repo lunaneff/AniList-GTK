@@ -3,6 +3,8 @@ anilist_gtk_sources = [
   'MainWindow.vala',
   'LoginWindow.vala',
   'AnilistClient.vala',
+  'MediaListWidget.vala',
+  'MediaListEntryWidget.vala',
 ]
 
 anilist_gtk_deps = [
