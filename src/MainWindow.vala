@@ -23,6 +23,13 @@ namespace AnilistGtk {
 	public class MainWindow : Adw.ApplicationWindow {
 	    private AnilistClient client;
 
+	    [GtkChild]
+	    private unowned Gtk.Stack main_stack;
+	    [GtkChild]
+	    private unowned Gtk.Box sidebar;
+	    [GtkChild]
+	    private unowned Adw.Leaflet leaflet;
+
 		public MainWindow(Gtk.Application app, AnilistClient client) {
 			Object (application: app);
 			this.client = client;
@@ -45,6 +52,16 @@ namespace AnilistGtk {
 		            );
 		        }
 		    }
+		}
+
+		[GtkCallback]
+		public void stack_changed(ParamSpec paramSpec) {
+		    leaflet.set_visible_child(main_stack);
+		}
+
+		[GtkCallback]
+		public void stack_back(Gtk.Button paramSpec) {
+		    leaflet.set_visible_child(sidebar);
 		}
 	}
 }
