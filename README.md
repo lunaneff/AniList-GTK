@@ -12,6 +12,9 @@ A native desktop client for AniList
 - Vala
 - GTK4
 - Libadwaita
+- Libsecret (+ a Secret Service implementation like GNOME Keyring or KWallet)
+- Libsoup
+- JSON-GLib
 - Meson (only needed for building)
 - Ninja (only needed for building)
 
@@ -25,9 +28,11 @@ $ sudo ninja -C build uninstall
 ```
 
 #### Flatpak
-You can open this project in GNOME Builder and export a Flatpak bundle from
-there. I don't know how to build one from the CLI (yet), but I'll add
-instructions once I do
+If you build a Flatpak, all dependencies will be built automatically:
+
+```shell
+$ flatpak-builder build-dir ch.laurinneff.AniList-GTK.json --force-clean --user --install
+```
 
 ### Windows & macOS
 It's probably possible to run this on Windows & macOS, but you're on your own
