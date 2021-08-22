@@ -21,7 +21,6 @@
 namespace AnilistGtk {
     public class MediaListWidget : Object {
         // For some reason, you can't subclass a ScrolledWindow
-        // Apparently, this will be possible in the next version of Vala
         public Gtk.ScrolledWindow scrolledWindow {get; private set;}
         private Gtk.ListBox listBox;
         private MediaList mediaList;
