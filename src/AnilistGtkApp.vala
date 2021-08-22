@@ -35,7 +35,6 @@ namespace AnilistGtk {
             client.get_token.begin((obj, async_res) => {
                 client.get_token.end(async_res);
                 release();
-                client.get_user_info.begin();
 
                 if(client.anilist_token == null) {
                     open_login_window();
@@ -57,7 +56,13 @@ namespace AnilistGtk {
                         var uri = Uri.parse(file.get_uri(), UriFlags.NONE);
                         var params = Uri.parse_params(uri.get_fragment());
 
-                        client.store_token.begin(params.get("access_token"));
+                        client.store_token.begin (params.get("access_token"), (obj, res) => {
+                            client.store_token.end (res);
+                            if(active_window is LoginWindow) {
+                                active_window.close();
+                                open_main_window();
+                            }
+                        });
                     } catch(UriError e) {
                         error("can't parse uri: %s", e.message);
                     }

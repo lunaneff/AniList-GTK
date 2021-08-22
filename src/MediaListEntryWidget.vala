@@ -21,7 +21,7 @@
 namespace AnilistGtk {
     [GtkTemplate (ui = "/ch/laurinneff/AniList-GTK/ui/MediaListEntryWidget.ui")]
     public class MediaListEntryWidget : Gtk.ListBoxRow {
-        private MediaListEntry mediaListEntry;
+        public MediaListEntry mediaListEntry {get; private set;}
         private Gdk.Pixbuf coverPixbuf;
 
         [GtkChild]
@@ -63,11 +63,17 @@ namespace AnilistGtk {
         }
 
         public async void load_image() {
-            var session = new Soup.Session();
-            var msg = new Soup.Message("GET", mediaListEntry.media.coverImage.large);
-            var stream = yield session.send_async(msg);
-            coverPixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
-		    cover.set_from_pixbuf(coverPixbuf);
+            try {
+                message("Loading image for %s", mediaListEntry.media.title.userPreferred);
+                var session = new Soup.Session();
+                var msg = new Soup.Message("GET", mediaListEntry.media.coverImage.large);
+                var stream = yield session.send_async(msg);
+                coverPixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
+		        cover.set_from_pixbuf(coverPixbuf);
+                message("Loaded image for %s", mediaListEntry.media.title.userPreferred);
+            } catch(Error e) {
+                warning("failed to load cover image: %s", e.message);
+            }
         }
     }
 }

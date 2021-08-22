@@ -33,11 +33,22 @@ namespace AnilistGtk {
 	    private unowned Adw.ViewStack anime_stack;
 	    [GtkChild]
 	    private unowned Adw.ViewStack manga_stack;
+	    [GtkChild]
+	    private unowned Gtk.SearchEntry anime_search_entry;
+	    [GtkChild]
+	    private unowned Gtk.SearchEntry manga_search_entry;
 
 		public MainWindow(Gtk.Application app, AnilistClient client) {
 			Object (application: app);
 			this.client = client;
 			loadData.begin();
+
+			var back_action = new SimpleAction("back", null);
+			back_action.activate.connect(() => {
+                leaflet.navigate(Adw.NavigationDirection.BACK);
+			});
+			add_action(back_action);
+
 		}
 
 		public async void loadData() {
@@ -48,6 +59,10 @@ namespace AnilistGtk {
 		    foreach(var animeList in animeLists) {
 		        var mediaListWidget = new MediaListWidget(animeList);
 		        mediaListWidget.scrolledWindow.hscrollbar_policy = Gtk.PolicyType.NEVER;
+                anime_search_entry.search_changed.connect(() => {
+                    mediaListWidget.search = anime_search_entry.text;
+                    mediaListWidget.listBox.invalidate_filter();
+                });
 		        var page = anime_stack.add_titled(mediaListWidget.scrolledWindow, animeList.name, animeList.name);
 		        if(!animeList.isCustomList) {
 		            // I know this is a bad way of doing icons, but I'm not sure how to improve it
@@ -78,6 +93,10 @@ namespace AnilistGtk {
 		    foreach(var mangaList in mangaLists) {
 		        var mediaListWidget = new MediaListWidget(mangaList);
 		        mediaListWidget.scrolledWindow.hscrollbar_policy = Gtk.PolicyType.NEVER;
+                manga_search_entry.search_changed.connect(() => {
+                    mediaListWidget.search = manga_search_entry.text;
+                    mediaListWidget.listBox.invalidate_filter();
+                });
 		        var page = manga_stack.add_titled(mediaListWidget.scrolledWindow, mangaList.name, mangaList.name);
 		        if(!mangaList.isCustomList) {
 		            // I know this is a bad way of doing icons, but I'm not sure how to improve it
@@ -108,11 +127,6 @@ namespace AnilistGtk {
 		[GtkCallback]
 		public void stack_changed(ParamSpec paramSpec) {
 		    leaflet.set_visible_child(main_stack);
-		}
-
-		[GtkCallback]
-		public void stack_back(Gtk.Button paramSpec) {
-		    leaflet.set_visible_child(sidebar);
 		}
 	}
 }

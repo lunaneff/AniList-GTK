@@ -22,8 +22,10 @@ namespace AnilistGtk {
     public class MediaListWidget : Object {
         // For some reason, you can't subclass a ScrolledWindow
         public Gtk.ScrolledWindow scrolledWindow {get; private set;}
-        private Gtk.ListBox listBox;
+        public Gtk.ListBox listBox {get; private set;}
         private MediaList mediaList;
+
+        public string search = "";
 
         public MediaListWidget(MediaList list) {
             mediaList = list;
@@ -36,6 +38,21 @@ namespace AnilistGtk {
             }
 
             scrolledWindow.child = listBox;
+
+            listBox.set_filter_func ((row) => {
+                // TODO: Need to implement proper filter function
+                if(row is MediaListEntryWidget) {
+                    var entry = (MediaListEntryWidget) row;
+
+                    if(search == "") return true;
+
+                    if(entry.mediaListEntry.media.title.english.down().contains(search.down()) ||
+                        entry.mediaListEntry.media.title.native.down().contains(search.down()) ||
+                        entry.mediaListEntry.media.title.romaji.down().contains(search.down())) {
+                        return true;
+                    } else return false;
+                } else return false;
+            });
         }
     }
 }
