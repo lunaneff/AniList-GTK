@@ -38,7 +38,7 @@
         </child>
         <child>
           <object class="GtkStack" id="main_stack">
-            <property name="transition-type">GTK_STACK_TRANSITION_TYPE_SLIDE_UP_DOWN</property>
+            <property name="transition-type">slide-up-down</property>
             <signal name="notify::visible-child" handler="stack_changed"/>
             <child>
               <object class="GtkStackPage">
@@ -76,7 +76,7 @@
                               name="active"
                               bind-source="online_search_bar"
                               bind-property="search-mode-enabled"
-                              bind-flags="G_BINDING_BIDIRECTIONAL"/>
+                              bind-flags="bidirectional"/>
                           </object>
                         </child>
                       </object>
@@ -139,7 +139,21 @@
                               name="active"
                               bind-source="anime_search_bar"
                               bind-property="search-mode-enabled"
-                              bind-flags="G_BINDING_BIDIRECTIONAL"/>
+                              bind-flags="bidirectional"/>
+                          </object>
+                        </child>
+                        <child type="end">
+                          <object class="GtkComboBoxText" id="anime_sort_combobox">
+                            <items>
+                              <item translatable="yes" id="alpha">Alphabetic</item>
+                              <item translatable="yes" id="-alpha">Alphabetic (reverse)</item>
+                              <item translatable="yes" id="progress">Progress</item>
+                              <item translatable="yes" id="-progress">Progress (reverse)</item>
+                              <item translatable="yes" id="rating">Rating</item>
+                              <item translatable="yes" id="-rating">Rating (reverse)</item>
+                              <item translatable="yes" id="update">Last Updated</item>
+                              <item translatable="yes" id="upcoming">Upcoming next</item>
+                            </items>
                           </object>
                         </child>
                       </object>
@@ -148,9 +162,7 @@
                       <object class="GtkSearchBar" id="anime_search_bar">
                         <property name="key-capture-widget">leaflet</property>
                         <child>
-                          <object class="GtkSearchEntry" id="anime_search_entry">
-
-                          </object>
+                          <object class="GtkSearchEntry" id="anime_search_entry"/>
                         </child>
                       </object>
                     </child>
@@ -209,7 +221,21 @@
                               name="active"
                               bind-source="manga_search_bar"
                               bind-property="search-mode-enabled"
-                              bind-flags="G_BINDING_BIDIRECTIONAL"/>
+                              bind-flags="bidirectional"/>
+                          </object>
+                        </child>
+                        <child type="end">
+                          <object class="GtkComboBoxText" id="manga_sort_combobox">
+                            <items>
+                              <item translatable="yes" id="alpha">Alphabetic</item>
+                              <item translatable="yes" id="-alpha">Alphabetic (reverse)</item>
+                              <item translatable="yes" id="progress">Progress</item>
+                              <item translatable="yes" id="-progress">Progress (reverse)</item>
+                              <item translatable="yes" id="rating">Rating</item>
+                              <item translatable="yes" id="-rating">Rating (reverse)</item>
+                              <item translatable="yes" id="update">Last Updated</item>
+                              <item translatable="yes" id="upcoming">Upcoming next</item>
+                            </items>
                           </object>
                         </child>
                       </object>
@@ -218,9 +244,7 @@
                       <object class="GtkSearchBar" id="manga_search_bar">
                         <property name="key-capture-widget">leaflet</property>
                         <child>
-                          <object class="GtkSearchEntry" id="manga_search_entry">
-
-                          </object>
+                          <object class="GtkSearchEntry" id="manga_search_entry"/>
                         </child>
                       </object>
                     </child>

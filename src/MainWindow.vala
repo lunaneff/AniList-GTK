@@ -37,6 +37,10 @@ namespace AnilistGtk {
 	    private unowned Gtk.SearchEntry anime_search_entry;
 	    [GtkChild]
 	    private unowned Gtk.SearchEntry manga_search_entry;
+	    [GtkChild]
+	    private unowned Gtk.ComboBoxText anime_sort_combobox;
+	    [GtkChild]
+	    private unowned Gtk.ComboBoxText manga_sort_combobox;
 
 		public MainWindow(Gtk.Application app, AnilistClient client) {
 			Object (application: app);
@@ -62,6 +66,10 @@ namespace AnilistGtk {
                 anime_search_entry.search_changed.connect(() => {
                     mediaListWidget.search = anime_search_entry.text;
                     mediaListWidget.listBox.invalidate_filter();
+                });
+                anime_sort_combobox.changed.connect(() => {
+                    mediaListWidget.sort = anime_sort_combobox.get_active_id();
+                    mediaListWidget.listBox.invalidate_sort();
                 });
 		        var page = anime_stack.add_titled(mediaListWidget.scrolledWindow, animeList.name, animeList.name);
 		        if(!animeList.isCustomList) {
@@ -96,6 +104,10 @@ namespace AnilistGtk {
                 manga_search_entry.search_changed.connect(() => {
                     mediaListWidget.search = manga_search_entry.text;
                     mediaListWidget.listBox.invalidate_filter();
+                });
+                manga_sort_combobox.changed.connect(() => {
+                    mediaListWidget.sort = manga_sort_combobox.get_active_id();
+                    mediaListWidget.listBox.invalidate_sort();
                 });
 		        var page = manga_stack.add_titled(mediaListWidget.scrolledWindow, mangaList.name, mangaList.name);
 		        if(!mangaList.isCustomList) {

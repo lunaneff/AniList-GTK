@@ -25,16 +25,16 @@ namespace AnilistGtk {
         private Gdk.Pixbuf coverPixbuf;
 
         [GtkChild]
-        private unowned Gtk.Image cover;
+        private unowned Gtk.Picture cover;
         [GtkChild]
         private unowned Gtk.Label title;
         [GtkChild]
         private unowned Gtk.SpinButton progress;
+        [GtkChild]
+        private unowned Gtk.Label next_airing_time;
 
         public MediaListEntryWidget(MediaListEntry entry) {
             mediaListEntry = entry;
-            cover.height_request = 150;
-            cover.width_request = cover.height_request/3*2; // Recommended aspect ratio for covers on AniList is 2:3
 
             title.label = mediaListEntry.media.title.userPreferred;
 
@@ -49,6 +49,35 @@ namespace AnilistGtk {
             progress.adjustment.step_increment = 1;
             progress.set_range(0, progressMax);
             progress.value = mediaListEntry.progress;
+
+            if(mediaListEntry.media.nextAiringEpisode != null) {
+                var relative_next_airing_time = "in ";
+                {
+                    var now = new DateTime.now_utc();
+                    var diff = mediaListEntry.media.nextAiringEpisodeDate.difference(now);
+
+                    var days = diff / TimeSpan.DAY;
+                    var hours = (diff - days * TimeSpan.DAY) / TimeSpan.HOUR;
+                    var minutes = (diff - days * TimeSpan.DAY - hours * TimeSpan.HOUR) / TimeSpan.MINUTE;
+
+                    if(diff > TimeSpan.DAY) {
+                        relative_next_airing_time += "%id ".printf((int) days);
+                    }
+                    if(diff > TimeSpan.HOUR) {
+                        relative_next_airing_time += "%ih ".printf((int) hours);
+                    }
+                    if(diff > TimeSpan.MINUTE) {
+                        relative_next_airing_time += "%im ".printf((int) minutes);
+                    } else {
+                        relative_next_airing_time = "now";
+                    }
+                }
+
+                next_airing_time.label = "Episode %i airing %s".printf(
+                    mediaListEntry.media.nextAiringEpisode,
+                    relative_next_airing_time
+                );
+            }
 
             progress.value_changed.connect((type) => {
                 message("progress change");
@@ -66,10 +95,10 @@ namespace AnilistGtk {
             try {
                 message("Loading image for %s", mediaListEntry.media.title.userPreferred);
                 var session = new Soup.Session();
-                var msg = new Soup.Message("GET", mediaListEntry.media.coverImage.large);
+                var msg = new Soup.Message("GET", mediaListEntry.media.coverImage.medium);
                 var stream = yield session.send_async(msg);
                 coverPixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
-		        cover.set_from_pixbuf(coverPixbuf);
+		        cover.set_pixbuf(coverPixbuf);
                 message("Loaded image for %s", mediaListEntry.media.title.userPreferred);
             } catch(Error e) {
                 warning("failed to load cover image: %s", e.message);

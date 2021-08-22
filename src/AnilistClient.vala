@@ -305,6 +305,8 @@ namespace AnilistGtk {
         public string bannerImage {get; private set;}
         public Date startDate {get; private set;}
         public Date endDate {get; private set;}
+        public int? nextAiringEpisode {get; private set;}
+        public DateTime nextAiringEpisodeDate {get; private set;}
 
         public Media(Json.Object jsonMedia) {
             this.id = (int) jsonMedia.get_int_member("id");
@@ -406,6 +408,16 @@ namespace AnilistGtk {
                     this.endDate = Date();
                     this.endDate.set_dmy(day, month, year);
                 }
+            }
+
+            var nextAiringEpisode = jsonMedia.get_member("nextAiringEpisode");
+            if(!nextAiringEpisode.is_null()) {
+                var nextAiringEpisodeObj = nextAiringEpisode.get_object();
+                this.nextAiringEpisode = (int) nextAiringEpisodeObj.get_int_member("episode");
+                this.nextAiringEpisodeDate = new DateTime.from_unix_utc(nextAiringEpisodeObj.get_int_member("airingAt"));
+            } else {
+                this.nextAiringEpisode = null;
+                this.nextAiringEpisodeDate = null;
             }
         }
     }

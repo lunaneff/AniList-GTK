@@ -95,6 +95,10 @@ fragment mediaListEntry on MediaList {
       month
       day
     }
+    nextAiringEpisode {
+      airingAt
+      episode
+    }
   }
 }
 

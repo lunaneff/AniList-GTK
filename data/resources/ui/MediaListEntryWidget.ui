@@ -11,13 +11,22 @@
         <property name="margin-top">8</property>
         <property name="margin-bottom">8</property>
         <child>
-          <object class="GtkImage" id="cover"/>
+          <object class="GtkPicture" id="cover">
+            <property name="margin-end">8</property>
+          </object>
         </child>
         <child>
           <object class="GtkBox">
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel" id="title">
+                <property name="hexpand">true</property>
+                <property name="halign">start</property>
+                <property name="wrap">true</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="next_airing_time">
                 <property name="hexpand">true</property>
                 <property name="halign">start</property>
                 <property name="wrap">true</property>
