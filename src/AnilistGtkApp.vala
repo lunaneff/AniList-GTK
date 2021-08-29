@@ -108,6 +108,8 @@ namespace AnilistGtk {
             });
             set_accels_for_action("app.settings", {"<Control>comma"});
             add_action(settings_action);
+
+            set_accels_for_action("win.back", {"<Alt>Left", "Back"});
         }
 
         protected void open_login_window() {

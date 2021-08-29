@@ -52,7 +52,6 @@ namespace AnilistGtk {
                 leaflet.navigate(Adw.NavigationDirection.BACK);
 			});
 			add_action(back_action);
-
 		}
 
 		public async void loadData() {
