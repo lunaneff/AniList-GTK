@@ -49,6 +49,7 @@ namespace AnilistGtk {
 
         public async void store_token(string token) {
             try {
+                this.token = token;
                 bool res = yield Secret.password_store(token_schema, Secret.COLLECTION_DEFAULT,
                                                        "AniList-GTK Token", token, null, "is-anilist-token", true, null);
 
