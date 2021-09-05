@@ -42,7 +42,7 @@ namespace AnilistGtk {
 
         public AnilistClient(AnilistGtkApp app) {
             token_schema = new Secret.Schema("ch.laurinneff.AniList-GTK.Token", Secret.SchemaFlags.NONE,
-                                             "anilist-gtk", Secret.SchemaAttributeType.BOOLEAN);
+                                             "is-anilist-token", Secret.SchemaAttributeType.BOOLEAN, null);
             session = new Soup.Session();
             this.app = app;
         }
@@ -50,7 +50,7 @@ namespace AnilistGtk {
         public async void store_token(string token) {
             try {
                 bool res = yield Secret.password_store(token_schema, Secret.COLLECTION_DEFAULT,
-                                                       "AniList-GTK Token", token, null, "anilist-gtk", true);
+                                                       "AniList-GTK Token", token, null, "is-anilist-token", true, null);
 
                 message("stored token, res: %s", res ? "true" : "false");
             } catch(Error e) {
@@ -60,7 +60,8 @@ namespace AnilistGtk {
 
         public async string? get_token() {
             try {
-                string token = yield Secret.password_lookup(token_schema, null);
+                // TODO: Figure out why it doesn't return when I use the async version
+                string token = Secret.password_lookup_sync(token_schema, null, "is-anilist-token", true, null);
                 this.token = token;
                 return token;
             } catch(Error e) {
