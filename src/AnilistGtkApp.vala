@@ -109,6 +109,14 @@ namespace AnilistGtk {
             set_accels_for_action("app.settings", {"<Control>comma"});
             add_action(settings_action);
 
+            var logout_action = new SimpleAction("logout", null);
+            logout_action.activate.connect(() => {
+                client.delete_token.begin();
+                active_window.destroy();
+                open_login_window();
+            });
+            add_action(logout_action);
+
             set_accels_for_action("win.back", {"<Alt>Left", "Back"});
         }
 

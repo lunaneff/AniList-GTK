@@ -70,6 +70,16 @@ namespace AnilistGtk {
             }
         }
 
+        public async void delete_token() {
+            try {
+                var res = yield Secret.password_clear(token_schema, null, "is-anilist-token", true, null);
+
+                message("deleted token, res: %s", res ? "true" : "false");
+            } catch(Error e) {
+                warning("failed to delete token: %s", e.message);
+            }
+        }
+
         public async bool check_logged_in() {
             if(anilist_token == null) {
                 return false;
