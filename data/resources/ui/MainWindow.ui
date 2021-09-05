@@ -144,6 +144,12 @@
                         </child>
                         <child type="end">
                           <object class="GtkComboBoxText" id="anime_sort_combobox">
+                            <!-- TODO: There's probably a better way to sync the values of these -->
+                            <property
+                              name="active-id"
+                              bind-source="manga_sort_combobox"
+                              bind-property="active-id"
+                              bind-flags="bidirectional"/>
                             <items>
                               <item translatable="yes" id="alpha">Alphabetic</item>
                               <item translatable="yes" id="-alpha">Alphabetic (reverse)</item>

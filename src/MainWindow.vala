@@ -70,6 +70,10 @@ namespace AnilistGtk {
                     mediaListWidget.sort = anime_sort_combobox.get_active_id();
                     mediaListWidget.listBox.invalidate_sort();
                 });
+
+		        var settings = new GLib.Settings ("ch.laurinneff.AniList-GTK");
+                settings.bind ("sort-by", anime_sort_combobox, "active_id", GLib.SettingsBindFlags.DEFAULT);
+
 		        var page = anime_stack.add_titled(mediaListWidget.scrolledWindow, animeList.name, animeList.name);
 		        if(!animeList.isCustomList) {
 		            // I know this is a bad way of doing icons, but I'm not sure how to improve it

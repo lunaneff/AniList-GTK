@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="anilist-gtk">
 	<schema id="ch.laurinneff.AniList-GTK" path="/ch/laurinneff/AniList-GTK/">
+	  <key name="sort-by" type="s">
+	    <default>'alpha'</default>
+	    <summary>How lists are sorted</summary>
+	    <description>Possible values are: 'alpha', 'progress', 'rating', 'update', 'upcoming'. Prefix any value with '-' to reverse the order</description>
+	  </key>
 	</schema>
 </schemalist>
