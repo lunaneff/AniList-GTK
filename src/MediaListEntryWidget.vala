@@ -98,10 +98,23 @@ namespace AnilistGtk {
                 var msg = new Soup.Message("GET", mediaListEntry.media.coverImage.medium);
                 var stream = yield session.send_async(msg);
                 coverPixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
+
+                update_blur();
+                AnilistGtkApp.instance.settings.changed["blur-nsfw"].connect(update_blur);
+
 		        cover.set_pixbuf(coverPixbuf);
                 message("Loaded image for %s", mediaListEntry.media.title.userPreferred);
             } catch(Error e) {
                 warning("failed to load cover image: %s", e.message);
+            }
+        }
+
+        public void update_blur() {
+            var blur = AnilistGtkApp.instance.settings.get_boolean("blur-nsfw");
+            if(blur && mediaListEntry.media.isAdult) {
+                cover.get_style_context().add_class("blur");
+            } else {
+                cover.get_style_context().remove_class("blur");
             }
         }
     }

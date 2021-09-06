@@ -21,8 +21,6 @@
 namespace AnilistGtk {
 	[GtkTemplate (ui = "/ch/laurinneff/AniList-GTK/ui/MainWindow.ui")]
 	public class MainWindow : Adw.ApplicationWindow {
-	    private AnilistClient client;
-
 	    [GtkChild]
 	    private unowned Gtk.Stack main_stack;
 	    [GtkChild]
@@ -42,9 +40,8 @@ namespace AnilistGtk {
 	    [GtkChild]
 	    private unowned Gtk.ComboBoxText manga_sort_combobox;
 
-		public MainWindow(Gtk.Application app, AnilistClient client) {
+		public MainWindow(Gtk.Application app) {
 			Object (application: app);
-			this.client = client;
 			loadData.begin();
 
 			var back_action = new SimpleAction("back", null);
@@ -55,10 +52,10 @@ namespace AnilistGtk {
 		}
 
 		public async void loadData() {
-		    var user = yield client.get_user_info();
+		    var user = yield AnilistGtkApp.instance.client.get_user_info();
 		    message("username: %s", user.name);
 
-		    var animeLists = yield client.get_media_lists(user.name, MediaType.ANIME);
+		    var animeLists = yield AnilistGtkApp.instance.client.get_media_lists(user.name, MediaType.ANIME);
 		    foreach(var animeList in animeLists) {
 		        var mediaListWidget = new MediaListWidget(animeList);
 		        mediaListWidget.scrolledWindow.hscrollbar_policy = Gtk.PolicyType.NEVER;
@@ -71,8 +68,7 @@ namespace AnilistGtk {
                     mediaListWidget.listBox.invalidate_sort();
                 });
 
-		        var settings = new GLib.Settings ("ch.laurinneff.AniList-GTK");
-                settings.bind ("sort-by", anime_sort_combobox, "active_id", GLib.SettingsBindFlags.DEFAULT);
+                AnilistGtkApp.instance.settings.bind ("sort-by", anime_sort_combobox, "active_id", GLib.SettingsBindFlags.DEFAULT);
 
 		        var page = anime_stack.add_titled(mediaListWidget.scrolledWindow, animeList.name, animeList.name);
 		        if(!animeList.isCustomList) {
@@ -100,7 +96,7 @@ namespace AnilistGtk {
 		        }
 		    }
 
-		    var mangaLists = yield client.get_media_lists(user.name, MediaType.MANGA);
+		    var mangaLists = yield AnilistGtkApp.instance.client.get_media_lists(user.name, MediaType.MANGA);
 		    foreach(var mangaList in mangaLists) {
 		        var mediaListWidget = new MediaListWidget(mangaList);
 		        mediaListWidget.scrolledWindow.hscrollbar_policy = Gtk.PolicyType.NEVER;

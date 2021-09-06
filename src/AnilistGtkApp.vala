@@ -20,10 +20,15 @@
 
 namespace AnilistGtk {
     public class AnilistGtkApp : Gtk.Application {
-        public AnilistClient client;
+        public static AnilistGtkApp instance {get; private set;}
+
+        public Settings settings {get; private set;}
+        public AnilistClient client {get; private set;}
 
         protected AnilistGtkApp() {
             Object (application_id: "ch.laurinneff.AniList-GTK", flags: ApplicationFlags.HANDLES_OPEN);
+            AnilistGtkApp.instance = this;
+            settings = new GLib.Settings ("ch.laurinneff.AniList-GTK");
         }
 
         protected override void activate() {
@@ -42,6 +47,10 @@ namespace AnilistGtk {
                     open_main_window();
                 }
             });
+
+            var style_provider = new Gtk.CssProvider();
+            style_provider.load_from_resource("/ch/laurinneff/AniList-GTK/css/blur.css");
+            Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
         }
 
         public override void open (File[] files, string hint) {
@@ -129,7 +138,7 @@ namespace AnilistGtk {
         protected void open_main_window() {
             var win = active_window;
             if(win == null) {
-                win = new MainWindow(this, client);
+                win = new MainWindow(this);
             }
             win.present();
         }

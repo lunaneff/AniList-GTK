@@ -6,5 +6,10 @@
 	    <summary>How lists are sorted</summary>
 	    <description>Possible values are: 'alpha', 'progress', 'rating', 'update', 'upcoming'. Prefix any value with '-' to reverse the order</description>
 	  </key>
+	  <key name="blur-nsfw" type="b">
+	    <default>true</default>
+	    <summary>Wheether NSFW cover images should be blurred</summary>
+	    <description>They're only blurred on the list pages, the unblurred versions can be seen after opening the media details</description>
+	  </key>
 	</schema>
 </schemalist>
