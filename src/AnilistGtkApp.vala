@@ -25,6 +25,10 @@ namespace AnilistGtk {
         public Settings settings {get; private set;}
         public AnilistClient client {get; private set;}
 
+        MainWindow main_window;
+        LoginWindow login_window;
+        PreferencesWindow preferences_window;
+
         protected AnilistGtkApp() {
             Object (application_id: "ch.laurinneff.AniList-GTK", flags: ApplicationFlags.HANDLES_OPEN);
             AnilistGtkApp.instance = this;
@@ -111,17 +115,15 @@ namespace AnilistGtk {
             set_accels_for_action("app.accels", {"F1", "<Control>question"});
             add_action(accels_action);
 
-            var settings_action = new SimpleAction("settings", null);
-            settings_action.activate.connect(() => {
-                message("show settings window");
-            });
-            set_accels_for_action("app.settings", {"<Control>comma"});
-            add_action(settings_action);
+            var preferences_action = new SimpleAction("preferences", null);
+            preferences_action.activate.connect(open_preferences_window);
+            set_accels_for_action("app.preferences", {"<Control>comma"});
+            add_action(preferences_action);
 
             var logout_action = new SimpleAction("logout", null);
             logout_action.activate.connect(() => {
                 client.delete_token.begin();
-                active_window.destroy();
+                main_window.destroy();
                 open_login_window();
             });
             add_action(logout_action);
@@ -131,16 +133,24 @@ namespace AnilistGtk {
 
         protected void open_login_window() {
             message("open login window");
-            var win = new LoginWindow(this);
-            win.present();
+            if(login_window == null) {
+                login_window = new LoginWindow(this);
+            }
+            login_window.present();
         }
 
         protected void open_main_window() {
-            var win = active_window;
-            if(win == null) {
-                win = new MainWindow(this);
+            if(main_window == null) {
+                main_window = new MainWindow(this);
             }
-            win.present();
+            main_window.present();
+        }
+
+        protected void open_preferences_window() {
+            preferences_window = new PreferencesWindow() {
+                transient_for = main_window
+            };
+            preferences_window.present();
         }
 
         public static int main(string[] args) {

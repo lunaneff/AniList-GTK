@@ -280,8 +280,8 @@
   <menu id='app-menu'>
     <section>
       <item>
-        <attribute name='label'>Settings</attribute>
-        <attribute name='action'>app.settings</attribute>
+        <attribute name='label'>Preferences</attribute>
+        <attribute name='action'>app.preferences</attribute>
         <attribute name='accel'>&lt;Ctrl&gt;comma</attribute>
       </item>
       <item>

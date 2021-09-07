@@ -2,6 +2,7 @@ anilist_gtk_sources = [
   'AnilistGtkApp.vala',
   'MainWindow.vala',
   'LoginWindow.vala',
+  'PreferencesWindow.vala',
   'AnilistClient.vala',
   'MediaListWidget.vala',
   'MediaListEntryWidget.vala',

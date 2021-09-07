@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.2.1"/>
+  <requires lib="libadwaita" version="1.0.0-alpha.2"/>
+  <template class="AnilistGtkPreferencesWindow" parent="AdwPreferencesWindow">
+    <property name="title" translatable="true">Preferences</property>
+    <property name="default-width">360</property>
+    <property name="default-height">600</property>
+    <property name="resizable">false</property>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title">preferences</property>
+        <property name="name">Preferences</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Display</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Blur NSFW</property>
+                <property name="activatable-widget">blur_nsfw_switch</property>
+                <child>
+                  <object class="GtkSwitch" id="blur_nsfw_switch">
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
