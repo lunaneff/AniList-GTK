@@ -441,10 +441,10 @@ namespace AnilistGtk {
         public string native {get; private set;}
 
         public MediaTitle(Json.Object jsonMediaTitle) {
-            this.userPreferred = jsonMediaTitle.get_string_member("userPreferred");
-            this.romaji = jsonMediaTitle.get_string_member("romaji");
-            this.english = jsonMediaTitle.get_string_member("english");
-            this.native = jsonMediaTitle.get_string_member("native");
+            this.userPreferred = jsonMediaTitle.get_string_member_with_default("userPreferred", "");
+            this.romaji = jsonMediaTitle.get_string_member_with_default("romaji", "");
+            this.english = jsonMediaTitle.get_string_member_with_default("english", "");
+            this.native = jsonMediaTitle.get_string_member_with_default("native", "");
         }
     }
 
