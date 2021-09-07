@@ -57,6 +57,10 @@ namespace AnilistGtk {
                 main_stack.set_visible_child_name("manga");
                 break;
             }
+
+            AnilistGtkApp.instance.settings.bind("width", this, "default-width", SettingsBindFlags.DEFAULT);
+            AnilistGtkApp.instance.settings.bind("height", this, "default-height", SettingsBindFlags.DEFAULT);
+            AnilistGtkApp.instance.settings.bind("is-maximized", this, "maximized", SettingsBindFlags.DEFAULT);
 		}
 
 		public async void loadData() {

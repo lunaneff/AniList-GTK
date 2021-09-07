@@ -16,5 +16,21 @@
 	    <summary>The page which is shown on startup</summary>
 	    <description>Possible values are: 'anime', 'manga'.</description>
 	  </key>
+
+	  <key name="width" type="i">
+	    <default>1280</default>
+	    <summary>Last window width</summary>
+	    <description>Used to restore window size after restarting</description>
+	  </key>
+	  <key name="height" type="i">
+	    <default>720</default>
+	    <summary>Last window height</summary>
+	    <description>Used to restore window size after restarting</description>
+	  </key>
+	  <key name="is-maximized" type="b">
+	    <default>false</default>
+	    <summary>Whether the window was maximized</summary>
+	    <description>Used to restore window size after restarting</description>
+	  </key>
 	</schema>
 </schemalist>
