@@ -4,9 +4,6 @@
   <requires lib="libadwaita" version="1.0.0-alpha.2"/>
   <template class="AnilistGtkPreferencesWindow" parent="AdwPreferencesWindow">
     <property name="title" translatable="true">Preferences</property>
-    <property name="default-width">360</property>
-    <property name="default-height">600</property>
-    <property name="resizable">false</property>
     <child>
       <object class="AdwPreferencesPage">
         <property name="title">preferences</property>
@@ -21,6 +18,34 @@
                 <child>
                   <object class="GtkSwitch" id="blur_nsfw_switch">
                     <property name="valign">center</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Default page</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Anime</property>
+                <property name="activatable-widget">default_page_radio_anime</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="default_page_radio_anime">
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Manga</property>
+                <property name="activatable-widget">default_page_radio_manga</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="default_page_radio_manga">
+                    <property name="valign">center</property>
+                    <property name="group">default_page_radio_anime</property>
                   </object>
                 </child>
               </object>

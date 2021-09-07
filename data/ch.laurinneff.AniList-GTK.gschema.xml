@@ -8,8 +8,13 @@
 	  </key>
 	  <key name="blur-nsfw" type="b">
 	    <default>true</default>
-	    <summary>Wheether NSFW cover images should be blurred</summary>
+	    <summary>Whether NSFW cover images should be blurred</summary>
 	    <description>They're only blurred on the list pages, the unblurred versions can be seen after opening the media details</description>
+	  </key>
+	  <key name="default-page" type="s">
+	    <default>'anime'</default>
+	    <summary>The page which is shown on startup</summary>
+	    <description>Possible values are: 'anime', 'manga'.</description>
 	  </key>
 	</schema>
 </schemalist>

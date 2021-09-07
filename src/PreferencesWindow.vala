@@ -23,9 +23,38 @@ namespace AnilistGtk {
     public class PreferencesWindow : Adw.PreferencesWindow {
         [GtkChild]
         private unowned Gtk.Switch blur_nsfw_switch;
+        [GtkChild]
+        private unowned Gtk.CheckButton default_page_radio_anime;
+        [GtkChild]
+        private unowned Gtk.CheckButton default_page_radio_manga;
 
 		public PreferencesWindow() {
 			AnilistGtkApp.instance.settings.bind("blur-nsfw", blur_nsfw_switch, "active", SettingsBindFlags.DEFAULT);
+
+            update_default_page_radios();
+			AnilistGtkApp.instance.settings.changed["default-page"].connect(update_default_page_radios);
+			default_page_radio_anime.notify["active"].connect(update_default_page_setting);
+			default_page_radio_manga.notify["active"].connect(update_default_page_setting);
+		}
+
+		private void update_default_page_radios() {
+            var default_page = AnilistGtkApp.instance.settings.get_string("default-page");
+            switch(default_page) {
+            case "anime": // Anime
+                default_page_radio_anime.active = true;
+                break;
+            case "manga": // Manga
+                default_page_radio_manga.active = true;
+                break;
+            }
+		}
+
+		private void update_default_page_setting() {
+		    if(default_page_radio_anime.active) {
+		        AnilistGtkApp.instance.settings.set_string("default-page", "anime");
+		    } else if(default_page_radio_manga.active) {
+		        AnilistGtkApp.instance.settings.set_string("default-page", "manga");
+		    }
 		}
     }
 }

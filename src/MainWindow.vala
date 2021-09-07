@@ -24,8 +24,6 @@ namespace AnilistGtk {
 	    [GtkChild]
 	    private unowned Gtk.Stack main_stack;
 	    [GtkChild]
-	    private unowned Gtk.Box sidebar;
-	    [GtkChild]
 	    private unowned Adw.Leaflet leaflet;
 	    [GtkChild]
 	    private unowned Adw.ViewStack anime_stack;
@@ -49,6 +47,16 @@ namespace AnilistGtk {
                 leaflet.navigate(Adw.NavigationDirection.BACK);
 			});
 			add_action(back_action);
+
+            var default_page = AnilistGtkApp.instance.settings.get_string("default-page");
+            switch(default_page) {
+            case "anime":
+                main_stack.set_visible_child_name("anime");
+                break;
+            case "manga":
+                main_stack.set_visible_child_name("manga");
+                break;
+            }
 		}
 
 		public async void loadData() {
