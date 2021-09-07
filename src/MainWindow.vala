@@ -63,11 +63,19 @@ namespace AnilistGtk {
             AnilistGtkApp.instance.settings.bind("is-maximized", this, "maximized", SettingsBindFlags.DEFAULT);
 		}
 
-		public async void loadData() {
-		    var user = yield AnilistGtkApp.instance.client.get_user_info();
-		    message("username: %s", user.name);
+        public async void loadData() {
+            var user = yield AnilistGtkApp.instance.client.get_user_info();
+            message("username: %s", user.name);
 
-		    var animeLists = yield AnilistGtkApp.instance.client.get_media_lists(user.name, MediaType.ANIME);
+            var animeLists = yield AnilistGtkApp.instance.client.get_media_lists(user.name, MediaType.ANIME);
+            var anime_order = new Gee.ArrayList<string>.wrap(AnilistGtkApp.instance.settings.get_strv("anime-order"));
+
+            animeLists.sort((a, b) => {
+                var a_name = (a.isCustomList ? "CUSTOM_" : "") + a.name;
+                var b_name = (b.isCustomList ? "CUSTOM_" : "") + b.name;
+                return anime_order.index_of(a_name) - anime_order.index_of(b_name);
+            });
+
 		    foreach(var animeList in animeLists) {
 		        var mediaListWidget = new MediaListWidget(animeList);
 		        mediaListWidget.scrolledWindow.hscrollbar_policy = Gtk.PolicyType.NEVER;
@@ -109,6 +117,14 @@ namespace AnilistGtk {
 		    }
 
 		    var mangaLists = yield AnilistGtkApp.instance.client.get_media_lists(user.name, MediaType.MANGA);
+		    var manga_order = new Gee.ArrayList<string>.wrap(AnilistGtkApp.instance.settings.get_strv("manga-order"));
+
+            mangaLists.sort((a, b) => {
+                var a_name = (a.isCustomList ? "CUSTOM_" : "") + a.name;
+                var b_name = (b.isCustomList ? "CUSTOM_" : "") + b.name;
+                return manga_order.index_of(a_name) - manga_order.index_of(b_name);
+            });
+
 		    foreach(var mangaList in mangaLists) {
 		        var mediaListWidget = new MediaListWidget(mangaList);
 		        mediaListWidget.scrolledWindow.hscrollbar_policy = Gtk.PolicyType.NEVER;

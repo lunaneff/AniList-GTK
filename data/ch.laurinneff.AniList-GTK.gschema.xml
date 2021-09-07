@@ -17,12 +17,12 @@
 	    <description>Possible values are: 'anime', 'manga'.</description>
 	  </key>
 
-	  <key name="width" type="i">
+	  <key name="width" type="u">
 	    <default>1280</default>
 	    <summary>Last window width</summary>
 	    <description>Used to restore window size after restarting</description>
 	  </key>
-	  <key name="height" type="i">
+	  <key name="height" type="u">
 	    <default>720</default>
 	    <summary>Last window height</summary>
 	    <description>Used to restore window size after restarting</description>
@@ -31,6 +31,17 @@
 	    <default>false</default>
 	    <summary>Whether the window was maximized</summary>
 	    <description>Used to restore window size after restarting</description>
+	  </key>
+
+	  <key name="anime-order" type="as">
+	    <default>['Watching', 'Completed', 'Planning', 'Rewatching', 'Paused', 'Dropped']</default>
+	    <summary>The list order used in the anime page</summary>
+	    <description>For custom lists, use 'CUSTOM_ListName'.</description>
+	  </key>
+	  <key name="manga-order" type="as">
+	    <default>['Reading', 'Completed', 'Planning', 'Rereading', 'Paused', 'Dropped']</default>
+	    <summary>The list order used in the manga page</summary>
+	    <description>For custom lists, use 'CUSTOM_ListName'.</description>
 	  </key>
 	</schema>
 </schemalist>

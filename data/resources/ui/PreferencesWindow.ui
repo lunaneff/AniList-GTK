@@ -6,14 +6,15 @@
     <property name="title" translatable="true">Preferences</property>
     <child>
       <object class="AdwPreferencesPage">
-        <property name="title">preferences</property>
-        <property name="name">Preferences</property>
+        <property name="title">display</property>
+        <property name="name">Display</property>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Display</property>
+            <property name="title">General</property>
             <child>
               <object class="AdwActionRow">
-                <property name="title">Blur NSFW</property>
+                <property name="title">Blur NSFW cover images</property>
+                <property name="subtitle">Based on data from AniList. May not be 100% accurate.</property>
                 <property name="activatable-widget">blur_nsfw_switch</property>
                 <child>
                   <object class="GtkSwitch" id="blur_nsfw_switch">
@@ -48,6 +49,28 @@
                     <property name="group">default_page_radio_anime</property>
                   </object>
                 </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Anime list order</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Option not implemented</property>
+                <property name="subtitle">Change this manually using gsettings at ch.laurinneff.AniList-GTK.anime-order.</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Manga list order</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">Option not implemented</property>
+                <property name="subtitle">Change this manually using gsettings at ch.laurinneff.AniList-GTK.manga-order.</property>
               </object>
             </child>
           </object>
