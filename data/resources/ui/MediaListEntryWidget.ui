@@ -30,6 +30,7 @@
                 <property name="hexpand">true</property>
                 <property name="halign">start</property>
                 <property name="wrap">true</property>
+                <property name="css-classes">subtitle</property>
               </object>
             </child>
           </object>
