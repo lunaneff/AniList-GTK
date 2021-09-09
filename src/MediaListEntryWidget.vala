@@ -101,11 +101,28 @@ namespace AnilistGtk {
                     coverPixbuf = yield new Gdk.Pixbuf.from_stream_async(file.read());
                 } else {
                     message("Loading image for %s", mediaListEntry.media.title.userPreferred);
-                    var session = new Soup.Session();
-                    var msg = new Soup.Message("GET", mediaListEntry.media.coverImage.medium);
-                    var stream = yield session.send_async(msg);
-                    coverPixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
 
+                    // Threading code based on https://wiki.gnome.org/Projects/Vala/AsyncSamples#Background_thread_example
+                    SourceFunc callback = load_image.callback;
+                    Gdk.Pixbuf[] output = new Gdk.Pixbuf[1];
+
+                    ThreadFunc<void> run = () => {
+                        try {
+                            var session = new Soup.Session();
+                            var msg = new Soup.Message("GET", mediaListEntry.media.coverImage.medium);
+                            var stream = session.send(msg);
+                            var pixbuf = new Gdk.Pixbuf.from_stream(stream);
+                            output[0] = pixbuf;
+                        } catch(Error e) {
+                            warning("failed to load cover image: %s", e.message);
+                        }
+                        Idle.add((owned) callback);
+                        return;
+                    };
+                    new Thread<void>("load-image", run);
+
+                    yield;
+                    coverPixbuf = output[0];
                     coverPixbuf.save(file.get_path(), "jpeg");
                 }
                 update_blur();
