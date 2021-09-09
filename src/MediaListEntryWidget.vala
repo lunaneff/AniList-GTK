@@ -93,12 +93,21 @@ namespace AnilistGtk {
 
         public async void load_image() {
             try {
-                message("Loading image for %s", mediaListEntry.media.title.userPreferred);
-                var session = new Soup.Session();
-                var msg = new Soup.Message("GET", mediaListEntry.media.coverImage.medium);
-                var stream = yield session.send_async(msg);
-                coverPixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
+                var filename = Path.get_basename(Uri.parse(mediaListEntry.media.coverImage.medium, UriFlags.NONE).get_path());
+                var file = File.new_build_filename(AnilistGtkApp.instance.cache_dir, "images", filename);
+                var parent = file.get_parent();
+                if(!parent.query_exists()) parent.make_directory_with_parents();
+                if(file.query_exists()) {
+                    coverPixbuf = yield new Gdk.Pixbuf.from_stream_async(file.read());
+                } else {
+                    message("Loading image for %s", mediaListEntry.media.title.userPreferred);
+                    var session = new Soup.Session();
+                    var msg = new Soup.Message("GET", mediaListEntry.media.coverImage.medium);
+                    var stream = yield session.send_async(msg);
+                    coverPixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
 
+                    coverPixbuf.save(file.get_path(), "jpeg");
+                }
                 update_blur();
                 AnilistGtkApp.instance.settings.changed["blur-nsfw"].connect(update_blur);
 

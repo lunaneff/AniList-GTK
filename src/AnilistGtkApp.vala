@@ -25,6 +25,8 @@ namespace AnilistGtk {
         public Settings settings {get; private set;}
         public AnilistClient client {get; private set;}
 
+        public string cache_dir;
+
         MainWindow main_window;
         LoginWindow login_window;
         PreferencesWindow preferences_window;
@@ -33,6 +35,9 @@ namespace AnilistGtk {
             Object (application_id: "ch.laurinneff.AniList-GTK", flags: ApplicationFlags.HANDLES_OPEN);
             AnilistGtkApp.instance = this;
             settings = new GLib.Settings ("ch.laurinneff.AniList-GTK");
+            cache_dir = Path.build_filename(Environment.get_user_cache_dir(), "AniList-GTK");
+            //(File.new_for_path(cache_dir)).make_directory();
+            message("Cache dir: %s", cache_dir);
         }
 
         protected override void activate() {
