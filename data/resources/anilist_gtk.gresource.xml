@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/ch/laurinneff/AniList-GTK">
-    <file>ui/MainWindow.ui</file>
-    <file>ui/LoginWindow.ui</file>
-    <file>ui/PreferencesWindow.ui</file>
-    <file>ui/MediaListEntryWidget.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/MainWindow.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/LoginWindow.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/PreferencesWindow.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/MediaListEntryWidget.ui</file>
 
-    <file>graphql/user.graphql</file>
-    <file>graphql/media_list.graphql</file>
+    <file compressed="true">graphql/user.graphql</file>
+    <file compressed="true">graphql/media_list.graphql</file>
 
-    <file>css/blur.css</file>
+    <file compressed="true">css/blur.css</file>
   </gresource>
 </gresources>
