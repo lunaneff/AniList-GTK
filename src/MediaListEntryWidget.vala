@@ -52,11 +52,12 @@ namespace AnilistGtk {
             progress.set_range(0, progressMax);
             progress.value = mediaListEntry.progress;
 
-            if(mediaListEntry.media.nextAiringEpisode != null) {
-                var num_episodes_behind = mediaListEntry.media.nextAiringEpisode - mediaListEntry.progress;
-                if(num_episodes_behind > 0) {
-                    num_episodes_behind_label.label = "%i episode%s behind".printf(num_episodes_behind, num_episodes_behind != 0 ? "s" : "");
-                }
+            var num_episodes_released = mediaListEntry.media.nextAiringEpisode != null ?
+                                        mediaListEntry.media.nextAiringEpisode :
+                                        mediaListEntry.media.episodes;
+            var num_episodes_behind = num_episodes_released - mediaListEntry.progress;
+            if(num_episodes_behind > 0) {
+                num_episodes_behind_label.label = "%i episode%s behind".printf(num_episodes_behind, num_episodes_behind != 0 ? "s" : "");
             }
 
             if(mediaListEntry.media.nextAiringEpisode != null) {
