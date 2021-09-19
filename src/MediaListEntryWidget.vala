@@ -31,6 +31,8 @@ namespace AnilistGtk {
         [GtkChild]
         private unowned Gtk.SpinButton progress;
         [GtkChild]
+        private unowned Gtk.Label num_episodes_behind_label;
+        [GtkChild]
         private unowned Gtk.Label next_airing_time;
 
         public MediaListEntryWidget(MediaListEntry entry) {
@@ -49,6 +51,13 @@ namespace AnilistGtk {
             progress.adjustment.step_increment = 1;
             progress.set_range(0, progressMax);
             progress.value = mediaListEntry.progress;
+
+            if(mediaListEntry.media.nextAiringEpisode != null) {
+                var num_episodes_behind = mediaListEntry.media.nextAiringEpisode - mediaListEntry.progress;
+                if(num_episodes_behind > 0) {
+                    num_episodes_behind_label.label = "%i episode%s behind".printf(num_episodes_behind, num_episodes_behind != 0 ? "s" : "");
+                }
+            }
 
             if(mediaListEntry.media.nextAiringEpisode != null) {
                 var relative_next_airing_time = "in ";

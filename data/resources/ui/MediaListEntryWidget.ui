@@ -26,6 +26,14 @@
               </object>
             </child>
             <child>
+              <object class="GtkLabel" id="num_episodes_behind_label">
+                <property name="hexpand">true</property>
+                <property name="halign">start</property>
+                <property name="wrap">true</property>
+                <property name="css-classes">subtitle</property>
+              </object>
+            </child>
+            <child>
               <object class="GtkLabel" id="next_airing_time">
                 <property name="hexpand">true</property>
                 <property name="halign">start</property>
