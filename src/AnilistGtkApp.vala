@@ -19,7 +19,7 @@
  */
 
 namespace AnilistGtk {
-    public class AnilistGtkApp : Gtk.Application {
+    public class AnilistGtkApp : Adw.Application {
         public static AnilistGtkApp instance {get; private set;}
 
         public Settings settings {get; private set;}
