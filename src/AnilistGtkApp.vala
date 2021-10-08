@@ -57,9 +57,22 @@ namespace AnilistGtk {
                 }
             });
 
+            if(!style_manager.system_supports_color_schemes) {
+                update_color_scheme();
+                settings.changed["dark-mode"].connect(update_color_scheme);
+            }
+
             var style_provider = new Gtk.CssProvider();
             style_provider.load_from_resource("/ch/laurinneff/AniList-GTK/css/blur.css");
             Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+        }
+
+        private void update_color_scheme() {
+            if(settings.get_boolean("dark-mode")) {
+                style_manager.color_scheme = FORCE_DARK;
+            } else {
+                style_manager.color_scheme = FORCE_LIGHT;
+            }
         }
 
         public override void open (File[] files, string hint) {

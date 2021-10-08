@@ -12,6 +12,18 @@
           <object class="AdwPreferencesGroup">
             <property name="title">General</property>
             <child>
+              <object class="AdwActionRow" id="dark_mode_row">
+                <property name="title">Dark mode</property>
+                <property name="subtitle">Whether the app should use a dark theme. The system preference overrides this preference if it's supported.</property>
+                <property name="activatable-widget">dark_mode_switch</property>
+                <child>
+                  <object class="GtkSwitch" id="dark_mode_switch">
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
               <object class="AdwActionRow">
                 <property name="title">Blur NSFW cover images</property>
                 <property name="subtitle">Based on data from AniList. May not be 100% accurate.</property>

@@ -6,6 +6,11 @@
 	    <summary>How lists are sorted</summary>
 	    <description>Possible values are: 'alpha', 'progress', 'rating', 'update', 'upcoming'. Prefix any value with '-' to reverse the order</description>
 	  </key>
+	  <key name="dark-mode" type="b">
+	    <default>false</default>
+	    <summary>Whether the app should use a dark theme</summary>
+	    <description>The system preference overrides this preference if it's supported</description>
+	  </key>
 	  <key name="blur-nsfw" type="b">
 	    <default>true</default>
 	    <summary>Whether NSFW cover images should be blurred</summary>

@@ -22,6 +22,10 @@ namespace AnilistGtk {
 	[GtkTemplate (ui = "/ch/laurinneff/AniList-GTK/ui/PreferencesWindow.ui")]
     public class PreferencesWindow : Adw.PreferencesWindow {
         [GtkChild]
+        private unowned Adw.ActionRow dark_mode_row;
+        [GtkChild]
+        private unowned Gtk.Switch dark_mode_switch;
+        [GtkChild]
         private unowned Gtk.Switch blur_nsfw_switch;
         [GtkChild]
         private unowned Gtk.CheckButton default_page_radio_anime;
@@ -29,6 +33,9 @@ namespace AnilistGtk {
         private unowned Gtk.CheckButton default_page_radio_manga;
 
 		public PreferencesWindow() {
+			AnilistGtkApp.instance.settings.bind("dark-mode", dark_mode_switch, "active", SettingsBindFlags.DEFAULT);
+			AnilistGtkApp.instance.style_manager.bind_property("system-supports-color-schemes", dark_mode_row, "visible", SYNC_CREATE | INVERT_BOOLEAN);
+
 			AnilistGtkApp.instance.settings.bind("blur-nsfw", blur_nsfw_switch, "active", SettingsBindFlags.DEFAULT);
 
             update_default_page_radios();
