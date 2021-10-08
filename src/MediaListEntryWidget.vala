@@ -58,6 +58,7 @@ namespace AnilistGtk {
             var num_episodes_behind = num_episodes_released - mediaListEntry.progress;
             if(num_episodes_behind > 0) {
                 num_episodes_behind_label.label = "%i episode%s behind".printf(num_episodes_behind, num_episodes_behind != 1 ? "s" : "");
+                num_episodes_behind_label.visible = true;
             }
 
             if(mediaListEntry.media.nextAiringEpisode != null) {
@@ -87,6 +88,7 @@ namespace AnilistGtk {
                     mediaListEntry.media.nextAiringEpisode,
                     relative_next_airing_time
                 );
+                next_airing_time.visible = true;
             }
 
             progress.value_changed.connect((type) => {

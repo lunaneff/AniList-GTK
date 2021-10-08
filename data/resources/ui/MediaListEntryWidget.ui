@@ -31,6 +31,7 @@
                 <property name="halign">start</property>
                 <property name="wrap">true</property>
                 <property name="css-classes">caption</property>
+                <property name="visible">false</property>
               </object>
             </child>
             <child>
@@ -39,6 +40,7 @@
                 <property name="halign">start</property>
                 <property name="wrap">true</property>
                 <property name="css-classes">caption</property>
+                <property name="visible">false</property>
               </object>
             </child>
           </object>
