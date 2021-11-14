@@ -33,6 +33,10 @@ namespace AnilistGtk {
         private unowned Gtk.CheckButton default_page_radio_manga;
 
 		public PreferencesWindow() {
+            if(BuildConfig.BUILD_TYPE == DEVEL) {
+                get_style_context().add_class("devel");
+            }
+
 			AnilistGtkApp.instance.settings.bind("dark-mode", dark_mode_switch, "active", SettingsBindFlags.DEFAULT);
 			AnilistGtkApp.instance.style_manager.bind_property("system-supports-color-schemes", dark_mode_row, "visible", SYNC_CREATE | INVERT_BOOLEAN);
 

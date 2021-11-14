@@ -1,0 +1,1 @@
+option('build_type', type: 'combo', choices: ['devel', 'release'], value: 'devel')

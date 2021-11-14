@@ -133,7 +133,13 @@ namespace AnilistGtk {
                     copyright = "© 2021 Laurin Neff",
                     modal = true,
                     transient_for = active_window,
+                    version = BuildConfig.VERSION
                 };
+
+                if(BuildConfig.BUILD_TYPE == DEVEL) {
+                    dialog.get_style_context().add_class("devel");
+                }
+
                 dialog.present();
             });
             add_action(about_action);

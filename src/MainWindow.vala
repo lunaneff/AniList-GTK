@@ -42,6 +42,10 @@ namespace AnilistGtk {
 
 		public MainWindow(Gtk.Application app) {
 			Object (application: app);
+            if(BuildConfig.BUILD_TYPE == DEVEL) {
+                get_style_context().add_class("devel");
+            }
+
 			loadData.begin();
 
             var default_page = AnilistGtkApp.instance.settings.get_string("default-page");
