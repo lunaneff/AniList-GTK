@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop">
-	<id>ch.laurinneff.AniList-GTK.desktop</id>
+<component type="desktop-application">
+	<id>ch.laurinneff.AniList-GTK</id>
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>GPL-3.0-or-later</project_license>
+  <launchable type="desktop-id">ch.laurinneff.AniList-GTK.desktop</launchable>
   <name>AniList-GTK</name>
+  <summary>Track your favorite anime</summary>
 	<description>
 	  <p>
 	    An AniList client for GNOME
     </p>
 	</description>
+
+  <url type="homepage">https://github.com/laurinneff/AniList-GTK</url>
+  <url type="bugtracker">https://github.com/laurinneff/AniList-GTK/issues</url>
+
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+    <control>touch</control>
+  </recommends>
+
+  <provides>
+    <binary>ch.laurinneff.AniList-GTK</binary>
+    <mediatype>x-scheme-handler/anilist-gtk</mediatype>
+  </provides>
 </component>
