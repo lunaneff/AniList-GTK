@@ -6,9 +6,12 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/PreferencesWindow.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/MediaListEntryWidget.ui</file>
 
+    <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/sidebar-toggle-left-symbolic.svg</file>
+
     <file compressed="true">graphql/user.graphql</file>
     <file compressed="true">graphql/media_list.graphql</file>
 
     <file compressed="true">css/blur.css</file>
+    <file compressed="true">css/rounded.css</file>
   </gresource>
 </gresources>

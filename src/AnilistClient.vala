@@ -299,7 +299,7 @@ namespace AnilistGtk {
         }
     }
 
-    public class Media {
+    public class Media : Object {
         public int id {get; private set;}
         public MediaTitle title {get; private set;}
         public MediaCoverImage coverImage {get; private set;}
@@ -434,7 +434,7 @@ namespace AnilistGtk {
         }
     }
 
-    public class MediaTitle {
+    public class MediaTitle : Object {
         public string userPreferred {get; private set;}
         public string romaji {get; private set;}
         public string english {get; private set;}
@@ -448,7 +448,7 @@ namespace AnilistGtk {
         }
     }
 
-    public class MediaCoverImage {
+    public class MediaCoverImage : Object {
         public string extraLarge {get; private set;}
         public string large {get; private set;}
         public string medium {get; private set;}
@@ -460,7 +460,7 @@ namespace AnilistGtk {
         }
     }
 
-    public class User {
+    public class User : Object {
         public int id {get; private set;}
         public string name {get; private set;}
         public UserAvatar avatar {get; private set;}
@@ -472,7 +472,7 @@ namespace AnilistGtk {
         }
     }
 
-    public class UserAvatar {
+    public class UserAvatar : Object {
         public string large {get; private set;}
         public string medium {get; private set;}
 

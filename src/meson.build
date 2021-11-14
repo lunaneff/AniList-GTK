@@ -16,6 +16,7 @@ anilist_gtk_deps = [
   dependency('json-glib-1.0', version: '>= 1.6.2'),
   dependency('libsoup-2.4', version: '>= 2.72.0'),
   dependency('gee-0.8', version: '>= 0.20.4'),
+  #dependency('webkit2gtk-5.0', version: '>= 2.33.91'),
 ]
 
 gnome = import('gnome')

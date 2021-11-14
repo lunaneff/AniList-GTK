@@ -6,269 +6,183 @@
     <property name="title" translatable="true">AniList-GTK</property>
     <property name="default-width">1280</property>
     <property name="default-height">720</property>
-    <property name="width-request">360</property>
-    <property name="height-request">600</property>
     <child>
-      <object class="AdwLeaflet" id="leaflet">
-        <property name="can-swipe-back">true</property>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkBox" id="sidebar">
-            <property name="orientation">vertical</property>
-            <child>
-              <object class="AdwHeaderBar">
-                <binding name="show-end-title-buttons">
-                  <lookup name="folded">leaflet</lookup>
-                </binding>
-
-                <child type="end">
-                  <object class="GtkMenuButton">
-                    <property name="icon-name">open-menu-symbolic</property>
-                    <property name="menu-model">app-menu</property>
+          <object class="AdwHeaderBar">
+            <child type="start">
+              <object class="GtkRevealer">
+                <property name="transition-type">slide-right</property>
+                <property name="reveal-child" bind-source="search_button" bind-property="active" bind-flags="sync-create|invert-boolean"></property>
+                <child>
+                  <object class="GtkToggleButton">
+                    <property name="icon-name">sidebar-toggle-left-symbolic</property>
+                    <property name="tooltip-text">Toggle sidebar</property>
+                    <property name="active" bind-source="flap" bind-property="reveal-flap" bind-flags="sync-create|bidirectional"/>
                   </object>
                 </child>
               </object>
             </child>
-            <child>
-              <object class="GtkStackSidebar">
-                <property name="stack">main_stack</property>
-                <property name="vexpand">true</property>
+            <child type="title">
+              <object class="GtkStack" id="title_stack">
+                <property name="transition_type">crossfade</property>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">title</property>
+                    <property name="child">
+                      <object class="AdwViewSwitcherTitle" id="main_stack_switcher">
+                        <property name="title" translatable="true">AniList-GTK</property>
+                        <property name="stack">main_stack</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">search</property>
+                    <property name="child">
+                      <object class="GtkSearchEntry" id="search_entry"/>
+                    </property>
+                  </object>
+                </child>
+              </object>
+
+            </child>
+            <child type="end">
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">8</property>
+                <child>
+                  <object class="GtkToggleButton" id="search_button">
+                    <property name="icon-name">system-search-symbolic</property>
+                    <property name="tooltip-text">Search</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRevealer">
+                    <property name="transition-type">slide-left</property>
+                    <property name="reveal-child" bind-source="search_button" bind-property="active" bind-flags="sync-create|invert-boolean"></property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <property name="spacing">8</property>
+                        <child>
+                          <object class="GtkComboBoxText" id="sort_combobox">
+                            <property name="tooltip-text">Sort</property>
+                            <items>
+                              <item translatable="yes" id="alpha">Alphabetic</item>
+                              <item translatable="yes" id="-alpha">Alphabetic (reverse)</item>
+                              <item translatable="yes" id="progress">Progress</item>
+                              <item translatable="yes" id="-progress">Progress (reverse)</item>
+                              <item translatable="yes" id="rating">Rating</item>
+                              <item translatable="yes" id="-rating">Rating (reverse)</item>
+                              <item translatable="yes" id="update">Last Updated</item>
+                              <item translatable="yes" id="upcoming">Upcoming next</item>
+                            </items>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuButton">
+                            <property name="icon-name">open-menu-symbolic</property>
+                            <property name="menu-model">app-menu</property>
+                            <property name="tooltip-text">Menu</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
         </child>
         <child>
-          <object class="GtkStack" id="main_stack">
-            <property name="transition-type">slide-up-down</property>
-            <signal name="notify::visible-child" handler="stack_changed"/>
+          <object class="GtkStack" id="content_stack">
+            <property name="transition_type">over-down-up</property>
+            <child>
+              <object class="GtkStackPage">
+                <property name="name">main</property>
+                <property name="child">
+                  <object class="AdwFlap" id="flap">
+                    <property name="modal">true</property>
+                    <property name="flap">
+                      <object class="GtkStackSidebar" id="sidebar">
+                        <property name="width-request">200</property>
+                        <property name="css-classes">background</property>
+                      </object>
+                    </property>
+                    <property name="content">
+                      <object class="AdwViewStack" id="main_stack">
+                        <property name="vexpand">true</property>
+                        <child>
+                          <object class="AdwViewStackPage">
+                            <property name="name">anime</property>
+                            <property name="title">Anime</property>
+                            <property name="icon-name">video-display-symbolic</property>
+                            <property name="child">
+                              <object class="GtkStack" id="anime_stack">
+                                <property name="vexpand">true</property>
+                                <property name="width-request">360</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwViewStackPage">
+                            <property name="name">manga</property>
+                            <property name="title">Manga</property>
+                            <property name="icon-name">accessories-dictionary-symbolic</property>
+                            <property name="child">
+                              <object class="GtkStack" id="manga_stack">
+                                <property name="vexpand">true</property>
+                                <property name="width-request">360</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+              </object>
+            </child>
             <child>
               <object class="GtkStackPage">
                 <property name="name">search</property>
-                <property name="title">Search</property>
-                <property name="icon-name">system-search-symbolic</property>
                 <property name="child">
-                  <object class="GtkBox" id="search_page">
-                    <property name="hexpand">true</property>
-                    <property name="orientation">vertical</property>
+                  <object class="GtkScrolledWindow">
                     <child>
-                      <object class="AdwHeaderBar">
-                        <binding name="show-start-title-buttons">
-                          <lookup name="folded">leaflet</lookup>
-                        </binding>
-                        <child type="title">
-                          <object class="AdwWindowTitle">
-                            <property name="title">Search</property>
+                      <object class="AdwClamp">
+                        <property name="css-classes">background</property>
+                        <property name="child">
+                          <object class="GtkListBox">
+                            <property name="show-separators">true</property>
+                            <property name="selection-mode">none</property>
+                            <property name="margin-top">8</property>
+                            <property name="margin-bottom">8</property>
+                            <property name="margin-start">8</property>
+                            <property name="margin-end">8</property>
+                            <property name="css-classes">rounded</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label">Search results here</property>
+                              </object>
+                            </child>
                           </object>
-                        </child>
-                        <child>
-                          <object class="GtkButton">
-                            <property name="icon-name">go-previous-symbolic</property>
-                            <property name="action-name">win.back</property>
-
-                            <binding name="visible">
-                              <lookup name="folded">leaflet</lookup>
-                            </binding>
-                          </object>
-                        </child>
-                        <child type="end">
-                          <object class="GtkToggleButton">
-                            <property name="icon-name">system-search-symbolic</property>
-                            <property
-                              name="active"
-                              bind-source="online_search_bar"
-                              bind-property="search-mode-enabled"
-                              bind-flags="bidirectional"/>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkSearchBar" id="online_search_bar">
-                        <property name="key-capture-widget">leaflet</property>
-                        <child>
-                          <object class="GtkSearchEntry"/>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="label">Start typing to search</property>
-                        <property name="vexpand">true</property>
+                        </property>
                       </object>
                     </child>
                   </object>
                 </property>
               </object>
             </child>
-            <child>
-              <object class="GtkStackPage">
-                <property name="name">anime</property>
-                <property name="title">Anime</property>
-                <property name="icon-name">video-display-symbolic</property>
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="hexpand">true</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="AdwHeaderBar">
-                        <binding name="show-start-title-buttons">
-                          <lookup name="folded">leaflet</lookup>
-                        </binding>
-                        <child type="title">
-                          <object class="AdwViewSwitcherTitle" id="anime_title">
-                            <property name="title" translatable="true">AniList-GTK</property>
-                            <property name="subtitle">Anime</property>
-                            <property name="stack">anime_stack</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkButton">
-                            <property name="icon-name">go-previous-symbolic</property>
-                            <property name="action-name">win.back</property>
-
-                            <binding name="visible">
-                              <lookup name="folded">leaflet</lookup>
-                            </binding>
-                          </object>
-                        </child>
-                        <child type="end">
-                          <object class="GtkToggleButton">
-                            <property name="icon-name">system-search-symbolic</property>
-                            <property
-                              name="active"
-                              bind-source="anime_search_bar"
-                              bind-property="search-mode-enabled"
-                              bind-flags="bidirectional"/>
-                          </object>
-                        </child>
-                        <child type="end">
-                          <object class="GtkComboBoxText" id="anime_sort_combobox">
-                            <!-- TODO: There's probably a better way to sync the values of these -->
-                            <property
-                              name="active-id"
-                              bind-source="manga_sort_combobox"
-                              bind-property="active-id"
-                              bind-flags="bidirectional"/>
-                            <items>
-                              <item translatable="yes" id="alpha">Alphabetic</item>
-                              <item translatable="yes" id="-alpha">Alphabetic (reverse)</item>
-                              <item translatable="yes" id="progress">Progress</item>
-                              <item translatable="yes" id="-progress">Progress (reverse)</item>
-                              <item translatable="yes" id="rating">Rating</item>
-                              <item translatable="yes" id="-rating">Rating (reverse)</item>
-                              <item translatable="yes" id="update">Last Updated</item>
-                              <item translatable="yes" id="upcoming">Upcoming next</item>
-                            </items>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkSearchBar" id="anime_search_bar">
-                        <property name="key-capture-widget">leaflet</property>
-                        <child>
-                          <object class="GtkSearchEntry" id="anime_search_entry"/>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwViewStack" id="anime_stack">
-                        <property name="vexpand">true</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwViewSwitcherBar">
-                        <property name="stack">anime_stack</property>
-                        <binding name="reveal">
-                          <lookup name="title-visible">anime_title</lookup>
-                        </binding>
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkStackPage">
-                <property name="name">manga</property>
-                <property name="title">Manga</property>
-                <property name="icon-name">accessories-dictionary-symbolic</property>
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="hexpand">true</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="AdwHeaderBar">
-                        <binding name="show-start-title-buttons">
-                          <lookup name="folded">leaflet</lookup>
-                        </binding>
-                        <child type="title">
-                          <object class="AdwViewSwitcherTitle" id="manga_title">
-                            <property name="title" translatable="true">AniList-GTK</property>
-                            <property name="subtitle">Manga</property>
-                            <property name="stack">manga_stack</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkButton">
-                            <property name="icon-name">go-previous-symbolic</property>
-                            <property name="action-name">win.back</property>
-
-                            <binding name="visible">
-                              <lookup name="folded">leaflet</lookup>
-                            </binding>
-                          </object>
-                        </child>
-                        <child type="end">
-                          <object class="GtkToggleButton">
-                            <property name="icon-name">system-search-symbolic</property>
-                            <property
-                              name="active"
-                              bind-source="manga_search_bar"
-                              bind-property="search-mode-enabled"
-                              bind-flags="bidirectional"/>
-                          </object>
-                        </child>
-                        <child type="end">
-                          <object class="GtkComboBoxText" id="manga_sort_combobox">
-                            <items>
-                              <item translatable="yes" id="alpha">Alphabetic</item>
-                              <item translatable="yes" id="-alpha">Alphabetic (reverse)</item>
-                              <item translatable="yes" id="progress">Progress</item>
-                              <item translatable="yes" id="-progress">Progress (reverse)</item>
-                              <item translatable="yes" id="rating">Rating</item>
-                              <item translatable="yes" id="-rating">Rating (reverse)</item>
-                              <item translatable="yes" id="update">Last Updated</item>
-                              <item translatable="yes" id="upcoming">Upcoming next</item>
-                            </items>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkSearchBar" id="manga_search_bar">
-                        <property name="key-capture-widget">leaflet</property>
-                        <child>
-                          <object class="GtkSearchEntry" id="manga_search_entry"/>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwViewStack" id="manga_stack">
-                        <property name="vexpand">true</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwViewSwitcherBar">
-                        <property name="stack">manga_stack</property>
-                        <binding name="reveal">
-                          <lookup name="title-visible">manga_title</lookup>
-                        </binding>
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwViewSwitcherBar">
+            <property name="stack">main_stack</property>
+            <property name="reveal" bind-source="main_stack_switcher" bind-property="title-visible"/>
           </object>
         </child>
       </object>

@@ -22,45 +22,66 @@ namespace AnilistGtk {
 	[GtkTemplate (ui = "/ch/laurinneff/AniList-GTK/ui/MainWindow.ui")]
 	public class MainWindow : Adw.ApplicationWindow {
 	    [GtkChild]
-	    private unowned Gtk.Stack main_stack;
+	    private unowned Adw.ViewStack main_stack;
 	    [GtkChild]
-	    private unowned Adw.Leaflet leaflet;
+	    private unowned Gtk.Stack anime_stack;
 	    [GtkChild]
-	    private unowned Adw.ViewStack anime_stack;
+	    private unowned Gtk.Stack manga_stack;
 	    [GtkChild]
-	    private unowned Adw.ViewStack manga_stack;
+	    private unowned Gtk.Stack title_stack;
 	    [GtkChild]
-	    private unowned Gtk.SearchEntry anime_search_entry;
+	    private unowned Gtk.Stack content_stack;
 	    [GtkChild]
-	    private unowned Gtk.SearchEntry manga_search_entry;
+	    private unowned Gtk.ToggleButton search_button;
 	    [GtkChild]
-	    private unowned Gtk.ComboBoxText anime_sort_combobox;
+	    private unowned Gtk.SearchEntry search_entry;
 	    [GtkChild]
-	    private unowned Gtk.ComboBoxText manga_sort_combobox;
+	    private unowned Gtk.StackSidebar sidebar;
+	    [GtkChild]
+	    private unowned Gtk.ComboBoxText sort_combobox;
 
 		public MainWindow(Gtk.Application app) {
 			Object (application: app);
 			loadData.begin();
 
-			var back_action = new SimpleAction("back", null);
-			back_action.activate.connect(() => {
-                leaflet.navigate(Adw.NavigationDirection.BACK);
-			});
-			add_action(back_action);
-
             var default_page = AnilistGtkApp.instance.settings.get_string("default-page");
             switch(default_page) {
             case "anime":
-                main_stack.set_visible_child_name("anime");
+                main_stack.visible_child = anime_stack;
                 break;
             case "manga":
-                main_stack.set_visible_child_name("manga");
+                main_stack.visible_child = manga_stack;
                 break;
             }
 
             AnilistGtkApp.instance.settings.bind("width", this, "default-width", SettingsBindFlags.DEFAULT);
             AnilistGtkApp.instance.settings.bind("height", this, "default-height", SettingsBindFlags.DEFAULT);
             AnilistGtkApp.instance.settings.bind("is-maximized", this, "maximized", SettingsBindFlags.DEFAULT);
+            AnilistGtkApp.instance.settings.bind("sort-by", sort_combobox, "active_id", GLib.SettingsBindFlags.DEFAULT);
+
+            main_stack.notify["visible-child"].connect(() => {
+                sidebar.stack = (Gtk.Stack) main_stack.visible_child;
+            });
+            sidebar.stack = (Gtk.Stack) main_stack.visible_child;
+
+            search_button.notify["active"].connect(() => {
+                title_stack.visible_child_name = search_button.active ? "search" : "title";
+                content_stack.visible_child_name = search_button.active ? "search" : "main";
+                if (search_button.active)
+                    search_entry.grab_focus();
+                else {
+                    search_entry.text = "";
+                    search_button.grab_focus(); // If the entry stays focused, typing doesn't work properly anymore. Setting the focus to the search button makes the most sense
+                }
+            });
+
+            search_entry.set_key_capture_widget(this);
+            search_entry.search_started.connect(() => search_button.active = true);
+            search_entry.stop_search.connect(() => search_button.active = false);
+
+            search_entry.search_changed.connect(() => {
+
+            });
 		}
 
         public async void loadData() {
@@ -79,16 +100,14 @@ namespace AnilistGtk {
 		    foreach(var animeList in animeLists) {
 		        var mediaListWidget = new MediaListWidget(animeList);
 		        mediaListWidget.scrolledWindow.hscrollbar_policy = Gtk.PolicyType.NEVER;
-                anime_search_entry.search_changed.connect(() => {
+                /*anime_search_entry.search_changed.connect(() => {
                     mediaListWidget.search = anime_search_entry.text;
                     mediaListWidget.listBox.invalidate_filter();
-                });
-                anime_sort_combobox.changed.connect(() => {
-                    mediaListWidget.sort = anime_sort_combobox.get_active_id();
+                });*/
+                sort_combobox.changed.connect(() => {
+                    mediaListWidget.sort = sort_combobox.get_active_id();
                     mediaListWidget.listBox.invalidate_sort();
                 });
-
-                AnilistGtkApp.instance.settings.bind ("sort-by", anime_sort_combobox, "active_id", GLib.SettingsBindFlags.DEFAULT);
 
 		        var page = anime_stack.add_titled(mediaListWidget.scrolledWindow, animeList.name, animeList.name);
 		        if(!animeList.isCustomList) {
@@ -128,12 +147,12 @@ namespace AnilistGtk {
 		    foreach(var mangaList in mangaLists) {
 		        var mediaListWidget = new MediaListWidget(mangaList);
 		        mediaListWidget.scrolledWindow.hscrollbar_policy = Gtk.PolicyType.NEVER;
-                manga_search_entry.search_changed.connect(() => {
+                /*manga_search_entry.search_changed.connect(() => {
                     mediaListWidget.search = manga_search_entry.text;
                     mediaListWidget.listBox.invalidate_filter();
-                });
-                manga_sort_combobox.changed.connect(() => {
-                    mediaListWidget.sort = manga_sort_combobox.get_active_id();
+                });*/
+                sort_combobox.changed.connect(() => {
+                    mediaListWidget.sort = sort_combobox.get_active_id();
                     mediaListWidget.listBox.invalidate_sort();
                 });
 		        var page = manga_stack.add_titled(mediaListWidget.scrolledWindow, mangaList.name, mangaList.name);
@@ -161,11 +180,6 @@ namespace AnilistGtk {
 		            }
 		        }
 		    }
-		}
-
-		[GtkCallback]
-		public void stack_changed(ParamSpec paramSpec) {
-		    leaflet.set_visible_child(main_stack);
 		}
 	}
 }
