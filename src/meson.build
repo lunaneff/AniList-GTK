@@ -27,7 +27,7 @@ anilist_gtk_sources += gnome.compile_resources('anilist_gtk-resources',
   source_dir: '../data/resources'
 )
 
-executable('anilist-gtk', anilist_gtk_sources,
+executable('ch.laurinneff.AniList-GTK', anilist_gtk_sources,
   vala_args: '--target-glib=2.50',  dependencies: anilist_gtk_deps,
   install: true,
 )

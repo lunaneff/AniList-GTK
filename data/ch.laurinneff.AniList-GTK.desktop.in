@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=AniList-GTK
-Exec=anilist-gtk %u
+Exec=ch.laurinneff.AniList-GTK %u
 Icon=ch.laurinneff.AniList-GTK
 Terminal=false
 Type=Application

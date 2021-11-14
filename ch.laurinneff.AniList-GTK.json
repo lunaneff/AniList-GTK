@@ -3,7 +3,7 @@
     "runtime" : "org.gnome.Platform",
     "runtime-version" : "41",
     "sdk" : "org.gnome.Sdk",
-    "command" : "anilist-gtk",
+    "command" : "ch.laurinneff.AniList-GTK",
     "finish-args" : [
         "--share=network",
         "--share=ipc",
