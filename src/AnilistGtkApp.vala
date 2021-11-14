@@ -62,20 +62,21 @@ namespace AnilistGtk {
                 settings.changed["dark-mode"].connect(update_color_scheme);
             }
 
-            var style_provider = new Gtk.CssProvider();
-
             try {
                 var style_enumerator = File.new_for_uri("resource:///ch/laurinneff/AniList-GTK/css/").enumerate_children("standard::*", NONE);
 	            FileInfo info = null;
                 while((info = style_enumerator.next_file()) != null) {
+                    var style_provider = new Gtk.CssProvider();
+
                     var name = info.get_name();
+
                     style_provider.load_from_resource(@"/ch/laurinneff/AniList-GTK/css/$name");
+
+                    Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
                 }
             } catch(Error e) {
                 warning("Error: %s", e.message);
             }
-
-            Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
         }
 
         private void update_color_scheme() {
