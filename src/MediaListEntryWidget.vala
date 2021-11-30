@@ -50,7 +50,7 @@ namespace AnilistGtk {
 
             progress.adjustment.step_increment = 1;
             progress.set_range(0, progressMax);
-            progress.value = mediaListEntry.progress;
+            mediaListEntry.bind_property("progress", progress, "value", BIDIRECTIONAL|SYNC_CREATE);
 
             var num_episodes_released = mediaListEntry.media.nextAiringEpisode != null ?
                                         mediaListEntry.media.nextAiringEpisode - 1 :
@@ -90,10 +90,6 @@ namespace AnilistGtk {
                 );
                 next_airing_time.visible = true;
             }
-
-            progress.value_changed.connect((type) => {
-                message("progress change");
-            });
 
             show.connect(show_handler);
             load_image.begin();

@@ -10,6 +10,7 @@
 
     <file compressed="true">graphql/user.graphql</file>
     <file compressed="true">graphql/media_list.graphql</file>
+    <file compressed="true">graphql/update_media_list_entry.graphql</file>
 
     <file compressed="true">css/blur.css</file>
     <file compressed="true">css/rounded.css</file>

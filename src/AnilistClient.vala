@@ -100,9 +100,7 @@ namespace AnilistGtk {
                 warning("failed to get graphql file: %s", e.message);
             }
 
-            var variables = new HashMap<string, string>();
-
-            var res = yield graphql_request((string) graphql, variables);
+            var res = yield graphql_request((string) graphql, new Json.Object());
             var user = new User(res.get_object_member("Viewer"));
             return user;
         }
@@ -115,11 +113,9 @@ namespace AnilistGtk {
                 warning("failed to get graphql file: %s", e.message);
             }
 
-            string strType = type.to_string();
-
-            var variables = new HashMap<string, string>();
-            variables["userName"] = user;
-            variables["type"] = strType;
+            var variables = new Json.Object();
+            variables.set_string_member("userName", user);
+            variables.set_string_member("type", type.to_string());
 
             var res = yield graphql_request((string) graphql, variables);
 
@@ -132,7 +128,7 @@ namespace AnilistGtk {
             return mediaLists;
         }
 
-        public async Json.Object? graphql_request(string graphql, HashMap<string, string> variables) {
+        public async Json.Object? graphql_request(string graphql, Json.Object variables) {
             var msg = new Soup.Message("POST", API_URL);
             msg.request_headers.append("Authorization", @"Bearer $anilist_token");
             msg.request_headers.append("Content-Type", "application/json");
@@ -146,11 +142,7 @@ namespace AnilistGtk {
                 gen.set_root(root);
                 root_object.set_string_member("query", graphql);
 
-                var vars_object = new Json.Object();
-                foreach (var variable in variables) {
-                    vars_object.set_string_member(variable.key, variable.value);
-                }
-                root_object.set_object_member("variables", vars_object);
+                root_object.set_object_member("variables", variables);
             }
 
             var json = gen.to_data(null);
@@ -213,36 +205,105 @@ namespace AnilistGtk {
     }
 
     public class MediaListEntry : Object {
-        public int id {get; private set;}
-        public MediaListEntryStatus status {get; private set;}
-        public double score {get; private set;}
-        public int progress {get; private set;}
-        public int progressVolumes {get; private set;}
-        public int repeat {get; private set;}
-        public int priority {get; private set;}
-        public bool private {get; private set;}
-        public bool hiddenFromStatusLists {get; private set;}
+        public int id {get; private set construct;}
+
+        private MediaListEntryStatus? _status;
+        public MediaListEntryStatus? status {get {return _status;} set {
+            _status = value;
+
+            if(status == CURRENT) {
+                var started = new DateTime.now_utc();
+                _startedAt = Date();
+                _startedAt.set_dmy((DateDay) started.get_day_of_month(), (DateMonth) started.get_month(), (DateYear) started.get_year());
+            }
+            if(status == COMPLETED) {
+                var completed = new DateTime.now_utc();
+                _completedAt = Date();
+                _completedAt.set_dmy((DateDay) completed.get_day_of_month(), (DateMonth) completed.get_month(), (DateYear) completed.get_year());
+            }
+
+            update.begin();
+        }}
+
+        private double _score;
+        public double score {get {return _score;} set {
+            _score = value;
+            update.begin();
+        }}
+
+        private int _progress;
+        public int progress {get {return _progress;} set {
+            _progress = value;
+            update.begin();
+        }}
+
+        private int _progressVolumes;
+        public int progressVolumes {get {return _progressVolumes;} set {
+            _progressVolumes = value;
+            update.begin();
+        }}
+
+        private int _repeat;
+        public int repeat {get {return _repeat;} set {
+            _repeat = value;
+            update.begin();
+        }}
+
+        private int _priority;
+        public int priority {get {return _priority;} set {
+            _priority = value;
+            update.begin();
+        }}
+
+        private bool _private;
+        public bool private {get {return _private;} set {
+            _private = value;
+            update.begin();
+        }}
+
+        private bool _hiddenFromStatusLists;
+        public bool hiddenFromStatusLists {get {return _hiddenFromStatusLists;} set {
+            _hiddenFromStatusLists = value;
+            update.begin();
+        }}
+
         // TODO: add customLists property (not implemented as I don't know the format the API returns this in)
         // TODO: add advancedScores property
-        public string notes {get; private set;}
-        public DateTime updatedAt {get; private set;}
-        public Date startedAt {get; private set;}
-        public Date completedAt {get; private set;}
-        public Media media {get; private set;}
+
+        private string _notes;
+        public string notes {get {return _notes;} set {
+            _notes = value;
+            update.begin();
+        }}
+
+        public DateTime updatedAt {get; private set construct;}
+
+        private Date _startedAt;
+        public Date startedAt {get {return _startedAt;} set {
+            _startedAt = value;
+            update.begin();
+        }}
+        private Date _completedAt;
+        public Date completedAt {get {return _completedAt;} set {
+            _completedAt = value;
+            update.begin();
+        }}
+
+        public Media media {get; private set construct;}
 
         public MediaListEntry(Json.Object jsonEntry) {
             this.id = (int) jsonEntry.get_int_member("id");
 
-            this.status = MediaListEntryStatus.from_string(jsonEntry.get_string_member("status"));
+            this._status = MediaListEntryStatus.from_string(jsonEntry.get_string_member("status"));
 
-            this.score = jsonEntry.get_double_member("score");
-            this.progress = (int) jsonEntry.get_int_member("progress");
-            this.progressVolumes = (int) jsonEntry.get_int_member("progressVolumes");
-            this.repeat = (int) jsonEntry.get_int_member("repeat");
-            this.priority = (int) jsonEntry.get_int_member("priority");
-            this.private = jsonEntry.get_boolean_member("private");
-            this.hiddenFromStatusLists = jsonEntry.get_boolean_member("hiddenFromStatusLists");
-            this.notes = jsonEntry.get_string_member("notes");
+            this._score = jsonEntry.get_double_member("score");
+            this._progress = (int) jsonEntry.get_int_member("progress");
+            this._progressVolumes = (int) jsonEntry.get_int_member("progressVolumes");
+            this._repeat = (int) jsonEntry.get_int_member("repeat");
+            this._priority = (int) jsonEntry.get_int_member("priority");
+            this._private = jsonEntry.get_boolean_member("private");
+            this._hiddenFromStatusLists = jsonEntry.get_boolean_member("hiddenFromStatusLists");
+            this._notes = jsonEntry.get_string_member("notes");
             this.updatedAt = new DateTime.from_unix_utc(jsonEntry.get_int_member("updatedAt"));
 
             var jsonStartedAt = jsonEntry.get_object_member("startedAt");
@@ -252,8 +313,8 @@ namespace AnilistGtk {
                     year = (DateYear) jsonStartedAt.get_int_member("year");
                 // Ask the GLib devs why they decided to use DateMonth in valid_dmy and int in set_dmy, I don't know why
                 if(Date.valid_dmy(day, (DateMonth) month, year)) {
-                    this.startedAt = Date();
-                    this.startedAt.set_dmy(day, month, year);
+                    this._startedAt = Date();
+                    this._startedAt.set_dmy(day, month, year);
                 }
             }
 
@@ -263,12 +324,48 @@ namespace AnilistGtk {
                     month = (int) jsonCompletedAt.get_int_member("month"),
                     year = (DateYear) jsonCompletedAt.get_int_member("year");
                 if(Date.valid_dmy(day, (DateMonth) month, year)) {
-                    this.completedAt = Date();
-                    this.completedAt.set_dmy(day, month, year);
+                    this._completedAt = Date();
+                    this._completedAt.set_dmy(day, month, year);
                 }
             }
 
             this.media = new Media(jsonEntry.get_object_member("media"));
+        }
+
+        private async void update() {
+            // TODO: implement
+            message("Le update");
+
+            uint8[] graphql;
+            try {
+                yield File.new_for_uri("resource:///ch/laurinneff/AniList-GTK/graphql/update_media_list_entry.graphql").load_contents_async(null, out graphql, null);
+            } catch(Error e) {
+                warning("failed to get graphql file: %s", e.message);
+            }
+
+            var variables = new Json.Object();
+            variables.set_int_member("id", id);
+            variables.set_string_member("status", status.to_string());
+            variables.set_double_member("score", score);
+            variables.set_int_member("progress", progress);
+            variables.set_int_member("progressVolumes", progressVolumes);
+            variables.set_int_member("repeat", repeat);
+            variables.set_int_member("priority", priority);
+            variables.set_boolean_member("private", private);
+            variables.set_boolean_member("hiddenFromStatusLists", hiddenFromStatusLists);
+            variables.set_string_member("notes", notes);
+            if(startedAt.valid()) {
+                variables.set_int_member("startedAtYear", (int) startedAt.get_year());
+                variables.set_int_member("startedAtMonth", (int) startedAt.get_month());
+                variables.set_int_member("startedAtDay", (int) startedAt.get_day());
+            }
+            if(completedAt.valid()) {
+                variables.set_int_member("completedAtYear", (int) completedAt.get_year());
+                variables.set_int_member("completedAtMonth", (int) completedAt.get_month());
+                variables.set_int_member("completedAtDay", (int) completedAt.get_day());
+            }
+
+            yield AnilistGtkApp.instance.client.graphql_request((string) graphql, variables);
         }
     }
 
@@ -276,9 +373,9 @@ namespace AnilistGtk {
         public int id {get; private set;}
         public MediaTitle title {get; private set;}
         public MediaCoverImage coverImage {get; private set;}
-        public MediaType mediaType {get; private set;}
-        public MediaFormat format {get; private set;}
-        public MediaStatus status {get; private set;}
+        public MediaType? mediaType {get; private set;}
+        public MediaFormat? format {get; private set;}
+        public MediaStatus? status {get; private set;}
         public int episodes {get; private set;}
         public int volumes {get; private set;}
         public int chapters {get; private set;}
