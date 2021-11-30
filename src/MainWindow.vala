@@ -37,8 +37,6 @@ namespace AnilistGtk {
 	    private unowned Gtk.SearchEntry search_entry;
 	    [GtkChild]
 	    private unowned Gtk.StackSidebar sidebar;
-	    [GtkChild]
-	    private unowned Gtk.ComboBoxText sort_combobox;
 
 		public MainWindow(Gtk.Application app) {
 			Object (application: app);
@@ -61,7 +59,6 @@ namespace AnilistGtk {
             AnilistGtkApp.instance.settings.bind("width", this, "default-width", SettingsBindFlags.DEFAULT);
             AnilistGtkApp.instance.settings.bind("height", this, "default-height", SettingsBindFlags.DEFAULT);
             AnilistGtkApp.instance.settings.bind("is-maximized", this, "maximized", SettingsBindFlags.DEFAULT);
-            AnilistGtkApp.instance.settings.bind("sort-by", sort_combobox, "active_id", GLib.SettingsBindFlags.DEFAULT);
 
             main_stack.notify["visible-child"].connect(() => {
                 sidebar.stack = (Gtk.Stack) main_stack.visible_child;
@@ -86,6 +83,10 @@ namespace AnilistGtk {
             search_entry.search_changed.connect(() => {
 
             });
+
+            var sort_action = AnilistGtkApp.instance.settings.create_action("sort-by");
+            add_action(sort_action);
+            AnilistGtkApp.instance.add_action(sort_action);
 		}
 
         public async void loadData() {
@@ -108,8 +109,8 @@ namespace AnilistGtk {
                     mediaListWidget.search = anime_search_entry.text;
                     mediaListWidget.listBox.invalidate_filter();
                 });*/
-                sort_combobox.changed.connect(() => {
-                    mediaListWidget.sort = sort_combobox.get_active_id();
+                AnilistGtkApp.instance.settings.changed["sort-by"].connect(() => {
+                    mediaListWidget.sort = AnilistGtkApp.instance.settings.get_string("sort-by");
                     mediaListWidget.listBox.invalidate_sort();
                 });
 
@@ -155,10 +156,11 @@ namespace AnilistGtk {
                     mediaListWidget.search = manga_search_entry.text;
                     mediaListWidget.listBox.invalidate_filter();
                 });*/
-                sort_combobox.changed.connect(() => {
-                    mediaListWidget.sort = sort_combobox.get_active_id();
+                AnilistGtkApp.instance.settings.changed["sort-by"].connect(() => {
+                    mediaListWidget.sort = AnilistGtkApp.instance.settings.get_string("sort-by");
                     mediaListWidget.listBox.invalidate_sort();
                 });
+
 		        var page = manga_stack.add_titled(mediaListWidget.scrolledWindow, mangaList.name, mangaList.name);
 		        if(!mangaList.isCustomList) {
 		            // I know this is a bad way of doing icons, but I'm not sure how to improve it
