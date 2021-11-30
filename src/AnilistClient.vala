@@ -115,15 +115,7 @@ namespace AnilistGtk {
                 warning("failed to get graphql file: %s", e.message);
             }
 
-            string strType = null;
-            switch(type) {
-            case MediaType.ANIME:
-                strType = "ANIME";
-                break;
-            case MediaType.MANGA:
-                strType = "MANGA";
-                break;
-            }
+            string strType = type.to_string();
 
             var variables = new HashMap<string, string>();
             variables["userName"] = user;
@@ -241,26 +233,7 @@ namespace AnilistGtk {
         public MediaListEntry(Json.Object jsonEntry) {
             this.id = (int) jsonEntry.get_int_member("id");
 
-            switch(jsonEntry.get_string_member("status")) {
-            case "CURRENT":
-                this.status = MediaListEntryStatus.CURRENT;
-                break;
-            case "PLANNING":
-                this.status = MediaListEntryStatus.PLANNING;
-                break;
-            case "COMPLETED":
-                this.status = MediaListEntryStatus.COMPLETED;
-                break;
-            case "DROPPED":
-                this.status = MediaListEntryStatus.DROPPED;
-                break;
-            case "PAUSED":
-                this.status = MediaListEntryStatus.PAUSED;
-                break;
-            case "REPEATING":
-                this.status = MediaListEntryStatus.REPEATING;
-                break;
-            }
+            this.status = MediaListEntryStatus.from_string(jsonEntry.get_string_member("status"));
 
             this.score = jsonEntry.get_double_member("score");
             this.progress = (int) jsonEntry.get_int_member("progress");
@@ -325,65 +298,11 @@ namespace AnilistGtk {
             this.title = new MediaTitle(jsonMedia.get_object_member("title"));
             this.coverImage = new MediaCoverImage(jsonMedia.get_object_member("coverImage"));
 
-            switch(jsonMedia.get_string_member("type")) {
-            case "ANIME":
-                this.mediaType = MediaType.ANIME;
-                break;
-            case "MANGA":
-                this.mediaType = MediaType.MANGA;
-                break;
-            }
+            this.mediaType = MediaType.from_string(jsonMedia.get_string_member("type"));
 
-            switch(jsonMedia.get_string_member("format")) {
-            case "TV":
-                this.format = MediaFormat.TV;
-                break;
-            case "TV_SHORT":
-                this.format = MediaFormat.TV_SHORT;
-                break;
-            case "MOVIE":
-                this.format = MediaFormat.MOVIE;
-                break;
-            case "SPECIAL":
-                this.format = MediaFormat.SPECIAL;
-                break;
-            case "OVA":
-                this.format = MediaFormat.OVA;
-                break;
-            case "ONA":
-                this.format = MediaFormat.ONA;
-                break;
-            case "MUSIC":
-                this.format = MediaFormat.MUSIC;
-                break;
-            case "MANGA":
-                this.format = MediaFormat.MANGA;
-                break;
-            case "NOVEL":
-                this.format = MediaFormat.NOVEL;
-                break;
-            case "ONE_SHOT":
-                this.format = MediaFormat.ONE_SHOT;
-                break;
-            }
+            this.format = MediaFormat.from_string(jsonMedia.get_string_member("format"));
 
-            switch(jsonMedia.get_string_member("status")) {
-            case "FINISHED":
-                this.status = MediaStatus.FINISHED;
-                break;
-            case "RELEASING":
-                this.status = MediaStatus.RELEASING;
-                break;
-            case "NOT_YET_RELEASED":
-                this.status = MediaStatus.NOT_YET_RELEASED;
-                break;
-            case "CANCELLED":
-                this.status = MediaStatus.CANCELLED;
-                break;
-            case "HIATUS":
-                this.status = MediaStatus.HIATUS;
-                break;
-            }
+            this.status = MediaStatus.from_string(jsonMedia.get_string_member("status"));
 
             this.episodes = (int) jsonMedia.get_int_member("episodes");
             this.volumes = (int) jsonMedia.get_int_member("volumes");
@@ -484,7 +403,45 @@ namespace AnilistGtk {
 
     public enum MediaType {
         ANIME,
-        MANGA
+        MANGA;
+
+        public string to_string() {
+            switch(this) {
+            case ANIME:
+                return "ANIME";
+            case MANGA:
+                return "MANGA";
+            }
+
+            // This shouldn't be reachable, but I had to add it so the compiler doesn't complain.
+            return "";
+        }
+
+        public static MediaType? from_string(string? media_type_str) {
+            if(media_type_str == null)
+                return null;
+
+            switch(media_type_str.up()) {
+            case "ANIME":
+                return ANIME;
+            case "MANGA":
+                return MANGA;
+            }
+
+            return null;
+        }
+
+        public string to_human_string() {
+            switch(this) {
+            case ANIME:
+                return "Anime";
+            case MANGA:
+                return "Manga";
+            }
+
+            // This shouldn't be reachable, but I had to add it so the compiler doesn't complain.
+            return "";
+        }
     }
 
     public enum MediaFormat {
@@ -497,7 +454,93 @@ namespace AnilistGtk {
         MUSIC,
         MANGA,
         NOVEL,
-        ONE_SHOT
+        ONE_SHOT;
+
+        public string to_string() {
+            switch(this) {
+            case TV:
+                return "TV";
+            case TV_SHORT:
+                return "TV_SHORT";
+            case MOVIE:
+                return "MOVIE";
+            case SPECIAL:
+                return "SPECIAL";
+            case OVA:
+                return "OVA";
+            case ONA:
+                return "ONA";
+            case MUSIC:
+                return "MUSIC";
+            case MANGA:
+                return "MANGA";
+            case NOVEL:
+                return "NOVEL";
+            case ONE_SHOT:
+                return "ONE_SHOT";
+            }
+
+            // This shouldn't be reachable, but I had to add it so the compiler doesn't complain.
+            return "";
+        }
+
+        public static MediaFormat? from_string(string? media_format_str) {
+            if(media_format_str == null)
+                return null;
+
+            switch(media_format_str.up()) {
+            case "TV":
+                return TV;
+            case "TV_SHORT":
+                return TV_SHORT;
+            case "MOVIE":
+                return MOVIE;
+            case "SPECIAL":
+                return SPECIAL;
+            case "OVA":
+                return OVA;
+            case "ONA":
+                return ONA;
+            case "MUSIC":
+                return MUSIC;
+            case "MANGA":
+                return MANGA;
+            case "NOVEL":
+                return NOVEL;
+            case "ONE_SHOT":
+                return ONE_SHOT;
+            }
+
+            return null;
+        }
+
+        public string to_human_string() {
+            switch(this) {
+            case TV:
+                return "TV";
+            case TV_SHORT:
+                return "TV Short";
+            case MOVIE:
+                return "Movie";
+            case SPECIAL:
+                return "Special";
+            case OVA:
+                return "OVA";
+            case ONA:
+                return "ONA";
+            case MUSIC:
+                return "Music";
+            case MANGA:
+                return "Manga";
+            case NOVEL:
+                return "Novel";
+            case ONE_SHOT:
+                return "Oneshot";
+            }
+
+            // This shouldn't be reachable, but I had to add it so the compiler doesn't complain.
+            return "";
+        }
     }
 
     public enum MediaStatus {
@@ -505,7 +548,63 @@ namespace AnilistGtk {
         RELEASING,
         NOT_YET_RELEASED,
         CANCELLED,
-        HIATUS
+        HIATUS;
+        
+        public string to_string() {
+            switch(this) {
+            case FINISHED:
+                return "FINISHED";
+            case RELEASING:
+                return "RELEASING";
+            case NOT_YET_RELEASED:
+                return "NOT_YET_RELEASED";
+            case CANCELLED:
+                return "CANCELLED";
+            case HIATUS:
+                return "HIATUS";
+            }
+
+            // This shouldn't be reachable, but I had to add it so the compiler doesn't complain.
+            return "";
+        }
+
+        public static MediaStatus? from_string(string? media_status_str) {
+            if(media_status_str == null)
+                return null;
+
+            switch(media_status_str.up()) {
+            case "FINISHED":
+                return FINISHED;
+            case "RELEASING":
+                return RELEASING;
+            case "NOT_YET_RELEASED":
+                return NOT_YET_RELEASED;
+            case "CANCELLED":
+                return CANCELLED;
+            case "HIATUS":
+                return HIATUS;
+            }
+
+            return null;
+        }
+
+        public string to_human_string() {
+            switch(this) {
+            case FINISHED:
+                return "Finished";
+            case RELEASING:
+                return "Releasing";
+            case NOT_YET_RELEASED:
+                return "Not Yet Released";
+            case CANCELLED:
+                return "Cancelled";
+            case HIATUS:
+                return "On Hiatus";
+            }
+
+            // This shouldn't be reachable, but I had to add it so the compiler doesn't complain.
+            return "";
+        }
     }
 
     public enum MediaListEntryStatus {
@@ -514,7 +613,69 @@ namespace AnilistGtk {
         COMPLETED,
         DROPPED,
         PAUSED,
-        REPEATING
+        REPEATING;
+
+        public string to_string() {
+            switch(this) {
+            case CURRENT:
+                return "CURRENT";
+            case PLANNING:
+                return "PLANNING";
+            case COMPLETED:
+                return "COMPLETED";
+            case DROPPED:
+                return "DROPPED";
+            case PAUSED:
+                return "PAUSED";
+            case REPEATING:
+                return "REPEATING";
+            }
+
+            // This shouldn't be reachable, but I had to add it so the compiler doesn't complain.
+            return "";
+        }
+
+        public static MediaListEntryStatus? from_string(string? media_list_entry_status_str) {
+            if(media_list_entry_status_str == null)
+                return null;
+
+            switch(media_list_entry_status_str.up()) {
+            case "CURRENT":
+                return CURRENT;
+            case "PLANNING":
+                return PLANNING;
+            case "COMPLETED":
+                return COMPLETED;
+            case "DROPPED":
+                return DROPPED;
+            case "PAUSED":
+                return PAUSED;
+            case "REPEATING":
+                return REPEATING;
+            }
+
+            return null;
+        }
+
+        public string to_human_string() {
+            switch(this) {
+            case CURRENT:
+                return "Current";
+            case PLANNING:
+                return "Planning";
+            case COMPLETED:
+                return "Completed";
+            case DROPPED:
+                return "Dropped";
+            case PAUSED:
+                return "Paused";
+            case REPEATING:
+                return "Repeating";
+            }
+
+            // This shouldn't be reachable, but I had to add it so the compiler doesn't complain.
+            return "";
+        }
     }
 }
 
