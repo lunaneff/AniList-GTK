@@ -86,7 +86,6 @@ namespace AnilistGtk {
 
             var sort_action = AnilistGtkApp.instance.settings.create_action("sort-by");
             add_action(sort_action);
-            AnilistGtkApp.instance.add_action(sort_action);
 		}
 
         public async void loadData() {
