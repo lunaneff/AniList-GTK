@@ -24,6 +24,8 @@ namespace AnilistGtk {
 	    [GtkChild]
 	    private unowned Adw.ViewStack main_stack;
 	    [GtkChild]
+	    private unowned Adw.Flap flap;
+	    [GtkChild]
 	    private unowned Gtk.Stack anime_stack;
 	    [GtkChild]
 	    private unowned Gtk.Stack manga_stack;
@@ -64,6 +66,13 @@ namespace AnilistGtk {
                 sidebar.stack = (Gtk.Stack) main_stack.visible_child;
             });
             sidebar.stack = (Gtk.Stack) main_stack.visible_child;
+
+            anime_stack.notify["visible-child"].connect(() => {
+                if(flap.folded) flap.reveal_flap = false;
+            });
+            manga_stack.notify["visible-child"].connect(() => {
+                if(flap.folded) flap.reveal_flap = false;
+            });
 
             search_button.notify["active"].connect(() => {
                 title_stack.visible_child_name = search_button.active ? "search" : "title";
