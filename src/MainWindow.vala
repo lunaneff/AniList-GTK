@@ -113,6 +113,8 @@ namespace AnilistGtk {
                     mediaListWidget.sort = AnilistGtkApp.instance.settings.get_string("sort-by");
                     mediaListWidget.listBox.invalidate_sort();
                 });
+                mediaListWidget.sort = AnilistGtkApp.instance.settings.get_string("sort-by");
+                mediaListWidget.listBox.invalidate_sort();
 
 		        var page = anime_stack.add_titled(mediaListWidget.scrolledWindow, animeList.name, animeList.name);
 		        if(!animeList.isCustomList) {
@@ -160,6 +162,8 @@ namespace AnilistGtk {
                     mediaListWidget.sort = AnilistGtkApp.instance.settings.get_string("sort-by");
                     mediaListWidget.listBox.invalidate_sort();
                 });
+                mediaListWidget.sort = AnilistGtkApp.instance.settings.get_string("sort-by");
+                mediaListWidget.listBox.invalidate_sort();
 
 		        var page = manga_stack.add_titled(mediaListWidget.scrolledWindow, mangaList.name, mangaList.name);
 		        if(!mangaList.isCustomList) {
