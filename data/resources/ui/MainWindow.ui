@@ -83,18 +83,18 @@
               <object class="GtkStackPage">
                 <property name="name">main</property>
                 <property name="child">
-                  <object class="GtkBox">
-                    <property name="orientation">vertical</property>
+                  <object class="AdwFlap" id="flap">
+                    <property name="modal">true</property>
+                    <child type="flap">
+                      <object class="GtkStackSidebar" id="sidebar">
+                        <property name="width-request">200</property>
+                        <property name="css-classes">background</property>
+                      </object>
+                    </child>
                     <child>
-                      <object class="AdwFlap" id="flap">
-                        <property name="modal">true</property>
-                        <property name="flap">
-                          <object class="GtkStackSidebar" id="sidebar">
-                            <property name="width-request">200</property>
-                            <property name="css-classes">background</property>
-                          </object>
-                        </property>
-                        <property name="content">
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <child>
                           <object class="AdwViewStack" id="main_stack">
                             <property name="vexpand">true</property>
                             <child>
@@ -124,13 +124,13 @@
                               </object>
                             </child>
                           </object>
-                        </property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwViewSwitcherBar">
-                        <property name="stack">main_stack</property>
-                        <property name="reveal" bind-source="main_stack_switcher" bind-property="title-visible"/>
+                        </child>
+                        <child>
+                          <object class="AdwViewSwitcherBar">
+                            <property name="stack">main_stack</property>
+                            <property name="reveal" bind-source="main_stack_switcher" bind-property="title-visible"/>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>

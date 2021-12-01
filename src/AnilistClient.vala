@@ -333,9 +333,6 @@ namespace AnilistGtk {
         }
 
         private async void update() {
-            // TODO: implement
-            message("Le update");
-
             uint8[] graphql;
             try {
                 yield File.new_for_uri("resource:///ch/laurinneff/AniList-GTK/graphql/update_media_list_entry.graphql").load_contents_async(null, out graphql, null);
