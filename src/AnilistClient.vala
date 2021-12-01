@@ -205,7 +205,7 @@ namespace AnilistGtk {
     }
 
     public class MediaListEntry : Object {
-        public int id {get; private set construct;}
+        public int id {get; private set;}
 
         private MediaListEntryStatus? _status;
         public MediaListEntryStatus? status {get {return _status;} set {
@@ -276,7 +276,7 @@ namespace AnilistGtk {
             update.begin();
         }}
 
-        public DateTime updatedAt {get; private set construct;}
+        public DateTime updatedAt {get; private set;}
 
         private Date _startedAt;
         public Date startedAt {get {return _startedAt;} set {
@@ -289,7 +289,7 @@ namespace AnilistGtk {
             update.begin();
         }}
 
-        public Media media {get; private set construct;}
+        public Media media {get; private set;}
 
         public MediaListEntry(Json.Object jsonEntry) {
             this.id = (int) jsonEntry.get_int_member("id");

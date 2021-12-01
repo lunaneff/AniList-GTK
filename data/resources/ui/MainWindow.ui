@@ -169,49 +169,51 @@
   </template>
 
   <menu id='app-menu'>
-    <section>
+    <submenu>
       <attribute name="label">Sort by</attribute>
-      <item>
-        <attribute name="label">Alphabetic</attribute>
-        <attribute name="action">win.sort-by</attribute>
-        <attribute name="target">alpha</attribute>
-      </item>
-      <item>
-        <attribute name="label">Alphabetic (reverse)</attribute>
-        <attribute name="action">win.sort-by</attribute>
-        <attribute name="target">-alpha</attribute>
-      </item>
-      <item>
-        <attribute name="label">Progress</attribute>
-        <attribute name="action">win.sort-by</attribute>
-        <attribute name="target">progress</attribute>
-      </item>
-      <item>
-        <attribute name="label">Progress (reverse)</attribute>
-        <attribute name="action">win.sort-by</attribute>
-        <attribute name="target">-progress</attribute>
-      </item>
-      <item>
-        <attribute name="label">Rating</attribute>
-        <attribute name="action">win.sort-by</attribute>
-        <attribute name="target">rating</attribute>
-      </item>
-      <item>
-        <attribute name="label">Rating (reverse)</attribute>
-        <attribute name="action">win.sort-by</attribute>
-        <attribute name="target">-rating</attribute>
-      </item>
-      <item>
-        <attribute name="label">Last Updated</attribute>
-        <attribute name="action">win.sort-by</attribute>
-        <attribute name="target">update</attribute>
-      </item>
-      <item>
-        <attribute name="label">Upcoming next</attribute>
-        <attribute name="action">win.sort-by</attribute>
-        <attribute name="target">upcoming</attribute>
-      </item>
-    </section>
+      <section>
+        <item>
+          <attribute name="label">Alphabetic</attribute>
+          <attribute name="action">win.sort-by</attribute>
+          <attribute name="target">alpha</attribute>
+        </item>
+        <item>
+          <attribute name="label">Alphabetic (reverse)</attribute>
+          <attribute name="action">win.sort-by</attribute>
+          <attribute name="target">-alpha</attribute>
+        </item>
+        <item>
+          <attribute name="label">Progress</attribute>
+          <attribute name="action">win.sort-by</attribute>
+          <attribute name="target">progress</attribute>
+        </item>
+        <item>
+          <attribute name="label">Progress (reverse)</attribute>
+          <attribute name="action">win.sort-by</attribute>
+          <attribute name="target">-progress</attribute>
+        </item>
+        <item>
+          <attribute name="label">Rating</attribute>
+          <attribute name="action">win.sort-by</attribute>
+          <attribute name="target">rating</attribute>
+        </item>
+        <item>
+          <attribute name="label">Rating (reverse)</attribute>
+          <attribute name="action">win.sort-by</attribute>
+          <attribute name="target">-rating</attribute>
+        </item>
+        <item>
+          <attribute name="label">Last Updated</attribute>
+          <attribute name="action">win.sort-by</attribute>
+          <attribute name="target">update</attribute>
+        </item>
+        <item>
+          <attribute name="label">Upcoming next</attribute>
+          <attribute name="action">win.sort-by</attribute>
+          <attribute name="target">upcoming</attribute>
+        </item>
+      </section>
+    </submenu>
     <section>
       <item>
         <attribute name="label">Preferences</attribute>
