@@ -31,6 +31,8 @@ namespace AnilistGtk {
         private unowned Gtk.CheckButton default_page_radio_anime;
         [GtkChild]
         private unowned Gtk.CheckButton default_page_radio_manga;
+        [GtkChild]
+        private unowned Adw.PreferencesPage display_page;
 
 		public PreferencesWindow() {
             if(BuildConfig.BUILD_TYPE == DEVEL) {
@@ -46,6 +48,10 @@ namespace AnilistGtk {
 			AnilistGtkApp.instance.settings.changed["default-page"].connect(update_default_page_radios);
 			default_page_radio_anime.notify["active"].connect(update_default_page_setting);
 			default_page_radio_manga.notify["active"].connect(update_default_page_setting);
+
+			display_page.add(new MediaListReordererWidget() { title = "Anime list order", setting = "anime-list" });
+
+			display_page.add(new MediaListReordererWidget() { title = "Manga list order", setting = "manga-list" });
 		}
 
 		private void update_default_page_radios() {

@@ -11,6 +11,8 @@ anilist_gtk_sources = [
   'MainWindow.vala',
   'LoginWindow.vala',
   'PreferencesWindow.vala',
+  'MediaListReordererWidget.vala',
+  'MediaListReordererRowWidget.vala',
   'AnilistClient.vala',
   'MediaListWidget.vala',
   'MediaListEntryWidget.vala',

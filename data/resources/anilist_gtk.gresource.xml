@@ -4,6 +4,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/MainWindow.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/LoginWindow.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/PreferencesWindow.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/MediaListReordererRowWidget.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/MediaListEntryWidget.ui</file>
 
     <file compressed="true" preprocess="xml-stripblanks">icons/scalable/actions/sidebar-toggle-left-symbolic.svg</file>

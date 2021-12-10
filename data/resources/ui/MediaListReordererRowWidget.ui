@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.2.1"/>
+  <requires lib="libadwaita" version="1.0.0-alpha.2"/>
+  <template class="AnilistGtkMediaListReordererRowWidget" parent="AdwPreferencesRow">
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkRevealer" id="top_revealer">
+            <child>
+              <object class="AdwActionRow"/>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow" id="action_row">
+            <property name="title">Watching</property>
+            <property name="icon-name">list-drag-handle-symbolic</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkRevealer" id="bottom_revealer">
+            <child>
+              <object class="AdwActionRow"/>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

@@ -5,7 +5,7 @@
   <template class="AnilistGtkPreferencesWindow" parent="AdwPreferencesWindow">
     <property name="title" translatable="true">Preferences</property>
     <child>
-      <object class="AdwPreferencesPage">
+      <object class="AdwPreferencesPage" id="display_page">
         <property name="title">display</property>
         <property name="name">Display</property>
         <child>
@@ -65,7 +65,7 @@
             </child>
           </object>
         </child>
-        <child>
+        <!--<child>
           <object class="AdwPreferencesGroup">
             <property name="title">Anime list order</property>
             <child>
@@ -86,7 +86,7 @@
               </object>
             </child>
           </object>
-        </child>
+        </child>-->
       </object>
     </child>
   </template>
