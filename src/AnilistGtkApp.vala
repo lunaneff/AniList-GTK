@@ -35,6 +35,7 @@ namespace AnilistGtk {
             Object (application_id: "ch.laurinneff.AniList-GTK", flags: ApplicationFlags.HANDLES_OPEN);
             AnilistGtkApp.instance = this;
             settings = new GLib.Settings ("ch.laurinneff.AniList-GTK");
+            client = new AnilistClient(this);
             cache_dir = Path.build_filename(Environment.get_user_cache_dir(), "AniList-GTK");
             //(File.new_for_path(cache_dir)).make_directory();
             message("Cache dir: %s", cache_dir);
@@ -42,8 +43,6 @@ namespace AnilistGtk {
 
         protected override void activate() {
             add_actions();
-
-            client = new AnilistClient(this);
 
             hold();
             client.get_token.begin((obj, async_res) => {

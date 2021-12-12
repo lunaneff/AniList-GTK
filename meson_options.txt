@@ -1,1 +1,2 @@
 option('build_type', type: 'combo', choices: ['devel', 'release'], value: 'devel')
+option('token_storage', type: 'combo', choices: ['auto', 'libsecret', 'dpapi'], value: 'auto')

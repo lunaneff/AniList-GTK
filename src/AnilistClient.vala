@@ -27,7 +27,9 @@ namespace AnilistGtk {
         public static string OAUTH_URI = @"https://anilist.co/api/v2/oauth/authorize?client_id=$OAUTH_CLIENT_ID&response_type=token";
         public const string API_URL = "https://graphql.anilist.co";
 
+#if TOKEN_STORAGE_LIBSECRET
         public Secret.Schema token_schema;
+#endif
 
         private string token;
         public string anilist_token {
@@ -41,13 +43,17 @@ namespace AnilistGtk {
         private AnilistGtkApp app;
 
         public AnilistClient(AnilistGtkApp app) {
+#if TOKEN_STORAGE_LIBSECRET
             token_schema = new Secret.Schema("ch.laurinneff.AniList-GTK.Token", Secret.SchemaFlags.NONE,
                                              "is-anilist-token", Secret.SchemaAttributeType.BOOLEAN, null);
+#endif
+
             session = new Soup.Session();
             this.app = app;
         }
 
         public async void store_token(string token) {
+#if TOKEN_STORAGE_LIBSECRET
             try {
                 this.token = token;
                 bool res = yield Secret.password_store(token_schema, Secret.COLLECTION_DEFAULT,
@@ -57,9 +63,19 @@ namespace AnilistGtk {
             } catch(Error e) {
                 warning("failed to store token: %s", e.message);
             }
+#elif TOKEN_STORAGE_DPAPI
+            this.token = token;
+            var encrypted_token = DPAPI.encrypt(new Bytes(token.data));
+            var variant_builder = new VariantBuilder(new VariantType("ay"));
+            foreach(var byte in encrypted_token.get_data()) {
+                variant_builder.add("y", byte);
+            }
+            AnilistGtkApp.instance.settings.set_value("anilist-token", variant_builder.end());
+#endif
         }
 
         public async string? get_token() {
+#if TOKEN_STORAGE_LIBSECRET
             try {
                 // TODO: Figure out why it doesn't return when I use the async version
                 string token = Secret.password_lookup_sync(token_schema, null, "is-anilist-token", true, null);
@@ -69,9 +85,29 @@ namespace AnilistGtk {
                 warning("failed to get token: %s", e.message);
                 return null;
             }
+#elif TOKEN_STORAGE_DPAPI
+            var encrypted_variant = AnilistGtkApp.instance.settings.get_value("anilist-token");
+            uint8[] encrypted_token = new uint8[encrypted_variant.n_children()];
+            for(var i = 0; i < encrypted_token.length; i++) {
+                encrypted_token[i] = encrypted_variant.get_child_value(i).get_byte();
+            }
+            if(encrypted_token.length == 0) {
+                message("No token stored");
+                return null;
+            } else {
+                var decrypted_data = DPAPI.decrypt(new Bytes(encrypted_token)).get_data();
+                var token_builder = new StringBuilder.sized(decrypted_data.length);
+                foreach(var byte in decrypted_data) {
+                    token_builder.append_c((char) byte);
+                } 
+                token = token_builder.str;
+                return token;
+            }
+#endif
         }
 
         public async void delete_token() {
+#if TOKEN_STORAGE_LIBSECRET
             try {
                 var res = yield Secret.password_clear(token_schema, null, "is-anilist-token", true, null);
 
@@ -79,6 +115,9 @@ namespace AnilistGtk {
             } catch(Error e) {
                 warning("failed to delete token: %s", e.message);
             }
+#elif TOKEN_STORAGE_DPAPI
+            AnilistGtkApp.instance.settings.reset("anilist-token");
+#endif
         }
 
         public async bool check_logged_in() {

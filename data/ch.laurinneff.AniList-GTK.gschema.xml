@@ -48,5 +48,11 @@
 	    <summary>The list order used in the manga page</summary>
 	    <description>For custom lists, use 'CUSTOM_ListName'.</description>
 	  </key>
+
+	  <key name="anilist-token" type="ay">
+	  	<default>[]</default>
+	    <summary>The AniList token</summary>
+	    <description>This is only used on systems which don't provide a method of storing secrets such as Windows.</description>
+	  </key>
 	</schema>
 </schemalist>

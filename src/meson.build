@@ -1,3 +1,7 @@
+vala_args = [
+  '--target-glib=2.50'
+]
+
 conf_data = configuration_data({
   'version': meson.project_version(),
   'build_type': get_option('build_type').to_upper()
@@ -39,11 +43,30 @@ anilist_gtk_deps = [
   dependency('gio-2.0', version: '>= 2.50'),
   dependency('gtk4', version: '>= 4.2.1'),
   libadwaita_dep,
-  dependency('libsecret-1', version: '>= 0.20.4'),
   dependency('json-glib-1.0', version: '>= 1.6.2'),
   dependency('libsoup-2.4', version: '>= 2.72.0'),
-  dependency('gee-0.8', version: '>= 0.20.4'),
+  dependency('gee-0.8', version: '>= 0.20')
 ]
+
+if get_option('token_storage') == 'auto'
+  if host_machine.system() == 'windows'
+    token_storage = 'dpapi'
+  else
+    token_storage = 'libsecret'
+  endif
+endif
+
+if token_storage == 'libsecret'
+  anilist_gtk_deps += dependency('libsecret-1', version: '>= 0.20.4')
+  vala_args += '-D'
+  vala_args += 'TOKEN_STORAGE_LIBSECRET'
+elif token_storage == 'dpapi'
+  anilist_gtk_sources += 'DPAPI.h'
+  anilist_gtk_sources += 'DPAPI.vapi'
+  anilist_gtk_deps += meson.get_compiler('c').find_library('crypt32')
+  vala_args += '-D'
+  vala_args += 'TOKEN_STORAGE_DPAPI'
+endif
 
 gnome = import('gnome')
 
@@ -54,6 +77,6 @@ anilist_gtk_sources += gnome.compile_resources('anilist_gtk-resources',
 )
 
 executable('ch.laurinneff.AniList-GTK', anilist_gtk_sources,
-  vala_args: '--target-glib=2.50',  dependencies: anilist_gtk_deps,
+  vala_args: vala_args,  dependencies: anilist_gtk_deps,
   install: true,
 )
