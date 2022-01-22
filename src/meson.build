@@ -12,7 +12,6 @@ anilist_gtk_sources = [
   'LoginWindow.vala',
   'PreferencesWindow.vala',
   'AnilistClient.vala',
-  'MediaListWidget.vala',
   'MediaListEntryWidget.vala',
   build_config
 ]
