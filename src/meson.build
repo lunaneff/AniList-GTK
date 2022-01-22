@@ -17,10 +17,29 @@ anilist_gtk_sources = [
   build_config
 ]
 
+# We can't use the shorthand syntax for subprojects for libadwaita because of https://github.com/mesonbuild/meson/issues/1923
+# Workaround code is based on https://gitlab.gnome.org/GNOME/gnome-clocks/-/blob/master/meson.build#L24-42
+libadwaita_dep = dependency('libadwaita-1', version: '>= 1.0.0-alpha.2', required: false)
+if not libadwaita_dep.found()
+  libadwaita_proj = subproject(
+    'libadwaita',
+    default_options: [
+      'examples=false',
+      'tests=false',
+    ]
+  )
+  libadwaita_dep = declare_dependency(
+    dependencies: [
+      libadwaita_proj.get_variable('libadwaita_dep'),
+      libadwaita_proj.get_variable('libadwaita_vapi'),
+    ]
+  )
+endif
+
 anilist_gtk_deps = [
   dependency('gio-2.0', version: '>= 2.50'),
   dependency('gtk4', version: '>= 4.2.1'),
-  dependency('libadwaita-1', version: '>= 1.0.0-alpha.2'),
+  libadwaita_dep,
   dependency('libsecret-1', version: '>= 0.20.4'),
   dependency('json-glib-1.0', version: '>= 1.6.2'),
   dependency('libsoup-2.4', version: '>= 2.72.0'),
