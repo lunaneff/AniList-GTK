@@ -1,6 +1,6 @@
 /* MainWindow.vala
  *
- * Copyright 2021 Laurin Neff <laurin@laurinneff.ch>
+ * Copyright 2021-2022 Laurin Neff <laurin@laurinneff.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ namespace AnilistGtk {
                 get_style_context().add_class("devel");
             }
 
-			loadData.begin();
+			load_data.begin();
 
             var default_page = AnilistGtkApp.instance.settings.get_string("default-page");
             switch(default_page) {
@@ -97,107 +97,108 @@ namespace AnilistGtk {
             add_action(sort_action);
 		}
 
-        public async void loadData() {
+        public async void load_data() {
+            yield load_lists(ANIME, new Gee.ArrayList<string>.wrap(AnilistGtkApp.instance.settings.get_strv("anime-order")), anime_stack);
+            yield load_lists(MANGA, new Gee.ArrayList<string>.wrap(AnilistGtkApp.instance.settings.get_strv("manga-order")), manga_stack);
+		}
+
+		public async List<Gtk.StackPage> load_lists(MediaType type, Gee.List<string> order, Gtk.Stack stack) {
             var user = yield AnilistGtkApp.instance.client.get_user_info();
-            message("username: %s", user.name);
 
-            var animeLists = yield AnilistGtkApp.instance.client.get_media_lists(user.name, MediaType.ANIME);
-            var anime_order = new Gee.ArrayList<string>.wrap(AnilistGtkApp.instance.settings.get_strv("anime-order"));
+		    var lists = yield AnilistGtkApp.instance.client.get_media_lists(user.name, type);
 
-            animeLists.sort((a, b) => {
+            lists.sort((a, b) => {
                 var a_name = (a.isCustomList ? "CUSTOM_" : "") + a.name;
                 var b_name = (b.isCustomList ? "CUSTOM_" : "") + b.name;
-                return anime_order.index_of(a_name) - anime_order.index_of(b_name);
+                return order.index_of(a_name) - order.index_of(b_name);
             });
 
-		    foreach(var animeList in animeLists) {
-		        var mediaListWidget = new MediaListWidget(animeList);
-		        mediaListWidget.scrolledWindow.hscrollbar_policy = Gtk.PolicyType.NEVER;
-                /*anime_search_entry.search_changed.connect(() => {
-                    mediaListWidget.search = anime_search_entry.text;
-                    mediaListWidget.listBox.invalidate_filter();
-                });*/
-                AnilistGtkApp.instance.settings.changed["sort-by"].connect(() => {
-                    mediaListWidget.sort = AnilistGtkApp.instance.settings.get_string("sort-by");
-                    mediaListWidget.listBox.invalidate_sort();
+            var pages = new List<Gtk.StackPage>();
+
+            foreach (var list in lists) {
+                var sorter = new Gtk.CustomSorter((a, b) => {
+                    if(a is MediaListEntry && b is MediaListEntry) {
+                        var sort = AnilistGtkApp.instance.settings.get_string("sort-by");
+                        var entry1 = (MediaListEntry) a;
+                        var entry2 = (MediaListEntry) b;
+                        int retval = 0;
+                        bool reverse = false;
+                        if(sort[0] == '-') reverse = true;
+                        string sort_type = sort;
+                        if(reverse) sort_type = sort_type[1:];
+
+                        switch(sort_type) {
+                        case "alpha":
+                            if(entry1.media.title.userPreferred.down() > entry2.media.title.userPreferred.down())
+                                retval = 1;
+                            else retval = -1;
+                            break;
+                        case "progress":
+                            if(entry1.progress > entry2.progress)
+                                retval = 1;
+                            else retval = -1;
+                            break;
+                        case "rating":
+                            if(entry1.score > entry2.score)
+                                retval = 1;
+                            else retval = -1;
+                            break;
+                        case "update":
+                            if(entry1.updatedAt.to_unix() > entry2.updatedAt.to_unix())
+                                retval = -1;
+                            else retval = 1;
+                            break;
+                        case "upcoming":
+                            if(entry1.media.nextAiringEpisodeDate.to_unix() > entry2.media.nextAiringEpisodeDate.to_unix())
+                                retval = 1;
+                            else retval = -1;
+                            break;
+                        }
+
+                        if(reverse) retval = -retval;
+                        return retval;
+                    } else return 0;
                 });
-                mediaListWidget.sort = AnilistGtkApp.instance.settings.get_string("sort-by");
-                mediaListWidget.listBox.invalidate_sort();
 
-		        var page = anime_stack.add_titled(mediaListWidget.scrolledWindow, animeList.name, animeList.name);
-		        if(!animeList.isCustomList) {
-		            // I know this is a bad way of doing icons, but I'm not sure how to improve it
-		            switch(animeList.name) {
-	                case "Watching":
-                        page.icon_name = "media-playback-start-symbolic";
-	                    break;
-	                case "Completed":
-                        page.icon_name = "object-select-symbolic";
-	                    break;
-	                case "Planning":
-                        page.icon_name = "x-office-calendar-symbolic";
-	                    break;
-	                case "Rewatching":
-                        page.icon_name = "media-playlist-repeat-symbolic";
-	                    break;
-	                case "Paused":
-                        page.icon_name = "media-playback-pause-symbolic";
-	                    break;
-	                case "Dropped":
-                        page.icon_name = "media-playback-stop-symbolic";
-	                    break;
-		            }
-		        }
-		    }
-
-		    var mangaLists = yield AnilistGtkApp.instance.client.get_media_lists(user.name, MediaType.MANGA);
-		    var manga_order = new Gee.ArrayList<string>.wrap(AnilistGtkApp.instance.settings.get_strv("manga-order"));
-
-            mangaLists.sort((a, b) => {
-                var a_name = (a.isCustomList ? "CUSTOM_" : "") + a.name;
-                var b_name = (b.isCustomList ? "CUSTOM_" : "") + b.name;
-                return manga_order.index_of(a_name) - manga_order.index_of(b_name);
-            });
-
-		    foreach(var mangaList in mangaLists) {
-		        var mediaListWidget = new MediaListWidget(mangaList);
-		        mediaListWidget.scrolledWindow.hscrollbar_policy = Gtk.PolicyType.NEVER;
-                /*manga_search_entry.search_changed.connect(() => {
-                    mediaListWidget.search = manga_search_entry.text;
-                    mediaListWidget.listBox.invalidate_filter();
-                });*/
                 AnilistGtkApp.instance.settings.changed["sort-by"].connect(() => {
-                    mediaListWidget.sort = AnilistGtkApp.instance.settings.get_string("sort-by");
-                    mediaListWidget.listBox.invalidate_sort();
+                    // TODO: Detect if the order was just inverted, and if so, pass INVERTED instead (to make resorting faster)
+                    sorter.changed(DIFFERENT);
                 });
-                mediaListWidget.sort = AnilistGtkApp.instance.settings.get_string("sort-by");
-                mediaListWidget.listBox.invalidate_sort();
 
-		        var page = manga_stack.add_titled(mediaListWidget.scrolledWindow, mangaList.name, mangaList.name);
-		        if(!mangaList.isCustomList) {
-		            // I know this is a bad way of doing icons, but I'm not sure how to improve it
-		            switch(mangaList.name) {
-	                case "Reading":
-                        page.icon_name = "accessories-dictionary-symbolic";
-	                    break;
-	                case "Completed":
-                        page.icon_name = "object-select-symbolic";
-	                    break;
-	                case "Planning":
-                        page.icon_name = "x-office-calendar-symbolic";
-	                    break;
-	                case "Rereading":
-                        page.icon_name = "media-playlist-repeat-symbolic";
-	                    break;
-	                case "Paused":
-                        page.icon_name = "media-playback-pause-symbolic";
-	                    break;
-	                case "Dropped":
-                        page.icon_name = "media-playback-stop-symbolic";
-	                    break;
-		            }
-		        }
-		    }
+                var sort_model = new Gtk.SortListModel(list.list_store, sorter) {
+                    incremental = true
+                };
+
+                var selection_model = new Gtk.NoSelection(sort_model);
+
+                var factory = new Gtk.SignalListItemFactory();
+                factory.setup.connect((listitem) => {
+                    var media_list_entry_widget = new MediaListEntryWidget();
+                    listitem.child = media_list_entry_widget;
+                });
+                factory.teardown.connect((listitem) => {
+                    listitem.child.destroy();
+                    listitem.child = null;
+                });
+                factory.bind.connect((listitem) => {
+                    var media_list_entry_widget = (MediaListEntryWidget) listitem.child;
+                    media_list_entry_widget.setup.begin((MediaListEntry) listitem.item);
+                });
+                factory.unbind.connect((listitem) => {
+                    var media_list_entry_widget = (MediaListEntryWidget) listitem.child;
+                    media_list_entry_widget.teardown.begin();
+                });
+
+                var list_view = new Gtk.ListView(selection_model, factory) {
+                    show_separators = true
+                };
+                var scrolled_window = new Gtk.ScrolledWindow();
+                scrolled_window.child = list_view;
+
+                pages.append(stack.add_titled(scrolled_window, list.name, list.name));
+            }
+
+            return pages;
 		}
 	}
 }

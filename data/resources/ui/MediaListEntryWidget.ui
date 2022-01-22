@@ -2,61 +2,57 @@
 <interface>
   <requires lib="gtk" version="4.2.1"/>
   <requires lib="libadwaita" version="1.0.0-alpha.2"/>
-  <template class="AnilistGtkMediaListEntryWidget" parent="GtkListBoxRow">
+  <template class="AnilistGtkMediaListEntryWidget" parent="GtkBox">
+    <property name="orientation">horizontal</property>
+    <property name="margin-start">8</property>
+    <property name="margin-end">8</property>
+    <property name="margin-top">8</property>
+    <property name="margin-bottom">8</property>
+    <child>
+      <object class="GtkPicture" id="cover">
+        <property name="margin-end">8</property>
+      </object>
+    </child>
     <child>
       <object class="GtkBox">
-        <property name="orientation">horizontal</property>
-        <property name="margin-start">8</property>
-        <property name="margin-end">8</property>
-        <property name="margin-top">8</property>
-        <property name="margin-bottom">8</property>
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkPicture" id="cover">
-            <property name="margin-end">8</property>
+          <object class="GtkLabel" id="title">
+            <property name="hexpand">true</property>
+            <property name="halign">start</property>
+            <property name="xalign">0</property>
+            <property name="yalign">0</property>
+            <property name="wrap">true</property>
           </object>
         </child>
         <child>
-          <object class="GtkBox">
-            <property name="orientation">vertical</property>
-            <child>
-              <object class="GtkLabel" id="title">
-                <property name="hexpand">true</property>
-                <property name="halign">start</property>
-                <property name="xalign">0</property>
-                <property name="yalign">0</property>
-                <property name="wrap">true</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel" id="num_episodes_behind_label">
-                <property name="hexpand">true</property>
-                <property name="halign">start</property>
-                <property name="xalign">0</property>
-                <property name="yalign">0</property>
-                <property name="wrap">true</property>
-                <property name="css-classes">caption</property>
-                <property name="visible">false</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel" id="next_airing_time">
-                <property name="hexpand">true</property>
-                <property name="halign">start</property>
-                <property name="xalign">0</property>
-                <property name="yalign">0</property>
-                <property name="wrap">true</property>
-                <property name="css-classes">caption</property>
-                <property name="visible">false</property>
-              </object>
-            </child>
+          <object class="GtkLabel" id="num_episodes_behind_label">
+            <property name="hexpand">true</property>
+            <property name="halign">start</property>
+            <property name="xalign">0</property>
+            <property name="yalign">0</property>
+            <property name="wrap">true</property>
+            <property name="css-classes">caption</property>
+            <property name="visible">false</property>
           </object>
         </child>
         <child>
-          <object class="GtkSpinButton" id="progress">
-            <property name="orientation">vertical</property>
-            <property name="numeric">true</property>
+          <object class="GtkLabel" id="next_airing_time">
+            <property name="hexpand">true</property>
+            <property name="halign">start</property>
+            <property name="xalign">0</property>
+            <property name="yalign">0</property>
+            <property name="wrap">true</property>
+            <property name="css-classes">caption</property>
+            <property name="visible">false</property>
           </object>
         </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSpinButton" id="progress">
+        <property name="orientation">vertical</property>
+        <property name="numeric">true</property>
       </object>
     </child>
   </template>

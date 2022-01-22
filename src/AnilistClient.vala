@@ -1,6 +1,6 @@
 /* AniList.vala
  *
- * Copyright 2021 Laurin Neff <laurin@laurinneff.ch>
+ * Copyright 2021-2022 Laurin Neff <laurin@laurinneff.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -189,17 +189,19 @@ namespace AnilistGtk {
         }
     }
 
-    public class MediaList : ArrayList<MediaListEntry> {
+    public class MediaList : Object {
         public string name {get; private set;}
         public bool isCustomList {get; private set;}
+        public ListStore list_store {get; private set;}
 
         public MediaList(Json.Object jsonList) {
             this.name = jsonList.get_string_member("name");
             this.isCustomList = jsonList.get_boolean_member("isCustomList");
+            this.list_store = new ListStore(typeof(MediaListEntry));
 
             foreach(var entryNode in jsonList.get_array_member("entries").get_elements()) {
                 var entry = entryNode.get_object();
-                this.add(new MediaListEntry(entry));
+                this.list_store.append(new MediaListEntry(entry));
             }
         }
     }

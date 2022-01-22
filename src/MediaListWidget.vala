@@ -1,6 +1,6 @@
 /* MediaListEntryWidget.vala
  *
- * Copyright 2021 Laurin Neff <laurin@laurinneff.ch>
+ * Copyright 2021-2022 Laurin Neff <laurin@laurinneff.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,9 +36,9 @@ namespace AnilistGtk {
             };
             listBox.selection_mode = Gtk.SelectionMode.NONE;
 
-            foreach(var mediaListEntry in mediaList) {
+            /*foreach(var mediaListEntry in mediaList) {
                 listBox.append(new MediaListEntryWidget(mediaListEntry));
-            }
+            }*/
 
             scrolledWindow.child = listBox;
 
@@ -48,9 +48,9 @@ namespace AnilistGtk {
 
                     if(search == "") return true;
 
-                    if(entry.mediaListEntry.media.title.english.down().contains(search.down()) ||
-                        entry.mediaListEntry.media.title.native.down().contains(search.down()) ||
-                        entry.mediaListEntry.media.title.romaji.down().contains(search.down())) {
+                    if(entry.media_list_entry.media.title.english.down().contains(search.down()) ||
+                        entry.media_list_entry.media.title.native.down().contains(search.down()) ||
+                        entry.media_list_entry.media.title.romaji.down().contains(search.down())) {
                         return true;
                     } else return false;
                 } else return false;
@@ -68,27 +68,27 @@ namespace AnilistGtk {
 
                     switch(sort_type) {
                     case "alpha":
-                        if(entry1.mediaListEntry.media.title.userPreferred.down() > entry2.mediaListEntry.media.title.userPreferred.down())
+                        if(entry1.media_list_entry.media.title.userPreferred.down() > entry2.media_list_entry.media.title.userPreferred.down())
                             retval = 1;
                         else retval = -1;
                         break;
                     case "progress":
-                        if(entry1.mediaListEntry.progress > entry2.mediaListEntry.progress)
+                        if(entry1.media_list_entry.progress > entry2.media_list_entry.progress)
                             retval = 1;
                         else retval = -1;
                         break;
                     case "rating":
-                        if(entry1.mediaListEntry.score > entry2.mediaListEntry.score)
+                        if(entry1.media_list_entry.score > entry2.media_list_entry.score)
                             retval = 1;
                         else retval = -1;
                         break;
                     case "update":
-                        if(entry1.mediaListEntry.updatedAt.to_unix() > entry2.mediaListEntry.updatedAt.to_unix())
+                        if(entry1.media_list_entry.updatedAt.to_unix() > entry2.media_list_entry.updatedAt.to_unix())
                             retval = -1;
                         else retval = 1;
                         break;
                     case "upcoming":
-                        if(entry1.mediaListEntry.media.nextAiringEpisodeDate.to_unix() > entry2.mediaListEntry.media.nextAiringEpisodeDate.to_unix())
+                        if(entry1.media_list_entry.media.nextAiringEpisodeDate.to_unix() > entry2.media_list_entry.media.nextAiringEpisodeDate.to_unix())
                             retval = 1;
                         else retval = -1;
                         break;

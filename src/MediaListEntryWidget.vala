@@ -1,6 +1,6 @@
 /* MediaListEntryWidget.vala
  *
- * Copyright 2021 Laurin Neff <laurin@laurinneff.ch>
+ * Copyright 2021-2022 Laurin Neff <laurin@laurinneff.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@
 
 namespace AnilistGtk {
     [GtkTemplate (ui = "/ch/laurinneff/AniList-GTK/ui/MediaListEntryWidget.ui")]
-    public class MediaListEntryWidget : Gtk.ListBoxRow {
-        public MediaListEntry mediaListEntry {get; private set;}
-        private Gdk.Pixbuf coverPixbuf;
+    public class MediaListEntryWidget : Gtk.Box {
+        public MediaListEntry media_list_entry {get; private set;}
+        private Gdk.Pixbuf cover_pixbuf;
 
         [GtkChild]
         private unowned Gtk.Picture cover;
@@ -35,120 +35,143 @@ namespace AnilistGtk {
         [GtkChild]
         private unowned Gtk.Label next_airing_time;
 
-        public MediaListEntryWidget(MediaListEntry entry) {
-            mediaListEntry = entry;
+        private Binding progress_binding;
 
-            title.label = mediaListEntry.media.title.userPreferred;
-
-            var progressMax = 0;
-            if(mediaListEntry.media.mediaType == MediaType.ANIME) {
-                progressMax = mediaListEntry.media.episodes;
-            } else if (mediaListEntry.media.mediaType == MediaType.MANGA) {
-                progressMax = mediaListEntry.media.chapters;
-            }
-            if(progressMax == 0) progressMax = int.MAX;
-
+        public MediaListEntryWidget() {
             progress.adjustment.step_increment = 1;
-            progress.set_range(0, progressMax);
-            mediaListEntry.bind_property("progress", progress, "value", BIDIRECTIONAL|SYNC_CREATE);
 
-            var num_episodes_released = mediaListEntry.media.nextAiringEpisode != null ?
-                                        mediaListEntry.media.nextAiringEpisode - 1 :
-                                        mediaListEntry.media.episodes;
-            var num_episodes_behind = num_episodes_released - mediaListEntry.progress;
+            AnilistGtkApp.instance.settings.changed["blur-nsfw"].connect(update_blur);
+        }
+
+        public async void setup(MediaListEntry entry) {
+            media_list_entry = entry;
+            title.label = media_list_entry.media.title.userPreferred;
+
+            var progress_max = 0;
+            if(media_list_entry.media.mediaType == ANIME) {
+                progress_max = media_list_entry.media.episodes;
+            } else if(media_list_entry.media.mediaType == MANGA) {
+                progress_max = media_list_entry.media.chapters;
+            }
+            if(progress_max == 0) progress_max = int.MAX;
+
+            progress.set_range(0, progress_max);
+            progress_binding = media_list_entry.bind_property("progress", progress, "value", BIDIRECTIONAL|SYNC_CREATE);
+
+            progress.notify["value"].connect(update_num_behind);
+            update_num_behind();
+
+            Timeout.add_seconds_full(Priority.DEFAULT, 60, update_next_airing_time);
+            update_next_airing_time();
+
+            update_blur();
+
+
+            var cover_url = media_list_entry.media.coverImage.medium;
+            var cover_filename = Checksum.compute_for_string(ChecksumType.SHA512, cover_url, cover_url.length) + ".png";
+            var cover_file = File.new_build_filename(AnilistGtkApp.instance.cache_dir, "images", cover_filename[0:2], cover_filename);
+
+            var parent = cover_file.get_parent();
+            try {
+                if(!parent.query_exists()) parent.make_directory_with_parents();
+            } catch(Error err) {
+                // According to the documentation, this should never be
+                // reached, since we check if the directory already exists
+                // beforehand. If we somehow still get here, just fail
+                error(err.message);
+            }
+
+            if(cover_file.query_exists()) {
+                try {
+                    cover_pixbuf = yield new Gdk.Pixbuf.from_stream_async(yield cover_file.read_async());
+                } catch(Error err) {
+                    warning(err.message);
+                }
+            } else {
+                // Reuse the session from the main AL client
+                var session = AnilistGtkApp.instance.client.session;
+                var msg = new Soup.Message("GET", cover_url);
+                try {
+                    var stream = yield session.send_async(msg);
+                    cover_pixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
+                    cover_pixbuf.save(cover_file.get_path(), "png");
+                } catch(Error err) {
+                    warning(err.message);
+                }
+            }
+
+            cover.set_pixbuf(cover_pixbuf);
+        }
+
+        public async void teardown() {
+            media_list_entry = null;
+
+            progress_binding.unbind();
+            progress.notify["value"].disconnect(update_num_behind);
+
+            // Since loading the image may take a bit, the wrong image might
+            // be displayed for a while when the widget is recycled.
+            cover.set_pixbuf(null);
+        }
+
+        private void update_num_behind() {
+            var num_episodes_released = media_list_entry.media.nextAiringEpisode != null ?
+                                        media_list_entry.media.nextAiringEpisode - 1 :
+                                        media_list_entry.media.episodes;
+            var num_episodes_behind = num_episodes_released - media_list_entry.progress;
             if(num_episodes_behind > 0) {
                 num_episodes_behind_label.label = "%i episode%s behind".printf(num_episodes_behind, num_episodes_behind != 1 ? "s" : "");
                 num_episodes_behind_label.visible = true;
+            } else {
+                num_episodes_behind_label.visible = false;
             }
+        }
 
-            if(mediaListEntry.media.nextAiringEpisode != null) {
+        private bool update_next_airing_time() {
+            if(media_list_entry == null) return Source.REMOVE;
+
+            if(media_list_entry.media.nextAiringEpisode != null) {
                 var relative_next_airing_time = "in ";
-                {
-                    var now = new DateTime.now_utc();
-                    var diff = mediaListEntry.media.nextAiringEpisodeDate.difference(now);
 
-                    var days = diff / TimeSpan.DAY;
-                    var hours = (diff - days * TimeSpan.DAY) / TimeSpan.HOUR;
-                    var minutes = (diff - days * TimeSpan.DAY - hours * TimeSpan.HOUR) / TimeSpan.MINUTE;
+                var now = new DateTime.now_utc();
+                var diff = media_list_entry.media.nextAiringEpisodeDate.difference(now);
 
-                    if(diff > TimeSpan.DAY) {
-                        relative_next_airing_time += "%id ".printf((int) days);
-                    }
-                    if(diff > TimeSpan.HOUR) {
-                        relative_next_airing_time += "%ih ".printf((int) hours);
-                    }
-                    if(diff > TimeSpan.MINUTE) {
-                        relative_next_airing_time += "%im ".printf((int) minutes);
-                    } else {
-                        relative_next_airing_time = "now";
-                    }
+                var days = diff / TimeSpan.DAY;
+                var hours = (diff - days * TimeSpan.DAY) / TimeSpan.HOUR;
+                var minutes = (diff - days * TimeSpan.DAY - hours * TimeSpan.HOUR) / TimeSpan.MINUTE;
+
+                if(diff > TimeSpan.DAY) {
+                    relative_next_airing_time += "%id ".printf((int) days);
+                }
+                if(diff > TimeSpan.HOUR) {
+                    relative_next_airing_time += "%ih ".printf((int) hours);
+                }
+                if(diff > TimeSpan.MINUTE) {
+                    relative_next_airing_time += "%im ".printf((int) minutes);
+                } else { // TODO: Hide the text some time after the episode airs
+                    relative_next_airing_time = "now";
                 }
 
                 next_airing_time.label = "Episode %i airing %s".printf(
-                    mediaListEntry.media.nextAiringEpisode,
+                    media_list_entry.media.nextAiringEpisode,
                     relative_next_airing_time
                 );
                 next_airing_time.visible = true;
-            }
-
-            show.connect(show_handler);
-            load_image.begin();
-        }
-
-        public void show_handler() {
-            message("show");
-        }
-
-        public async void load_image() {
-            try {
-                var filename = Path.get_basename(Uri.parse(mediaListEntry.media.coverImage.medium, UriFlags.NONE).get_path());
-                var file = File.new_build_filename(AnilistGtkApp.instance.cache_dir, "images", filename);
-                var parent = file.get_parent();
-                if(!parent.query_exists()) parent.make_directory_with_parents();
-                if(file.query_exists()) {
-                    coverPixbuf = yield new Gdk.Pixbuf.from_stream_async(file.read());
-                } else {
-                    message("Loading image for %s", mediaListEntry.media.title.userPreferred);
-
-                    // Threading code based on https://wiki.gnome.org/Projects/Vala/AsyncSamples#Background_thread_example
-                    SourceFunc callback = load_image.callback;
-                    Gdk.Pixbuf[] output = new Gdk.Pixbuf[1];
-
-                    ThreadFunc<void> run = () => {
-                        try {
-                            var session = new Soup.Session();
-                            var msg = new Soup.Message("GET", mediaListEntry.media.coverImage.medium);
-                            var stream = session.send(msg);
-                            var pixbuf = new Gdk.Pixbuf.from_stream(stream);
-                            output[0] = pixbuf;
-                        } catch(Error e) {
-                            warning("failed to load cover image: %s", e.message);
-                        }
-                        Idle.add((owned) callback);
-                        return;
-                    };
-                    new Thread<void>("load-image", run);
-
-                    yield;
-                    coverPixbuf = output[0];
-                    coverPixbuf.save(file.get_path(), "jpeg");
-                }
-                update_blur();
-                AnilistGtkApp.instance.settings.changed["blur-nsfw"].connect(update_blur);
-
-		        cover.set_pixbuf(coverPixbuf);
-                message("Loaded image for %s", mediaListEntry.media.title.userPreferred);
-            } catch(Error e) {
-                warning("failed to load cover image: %s", e.message);
-            }
-        }
-
-        public void update_blur() {
-            var blur = AnilistGtkApp.instance.settings.get_boolean("blur-nsfw");
-            if(blur && mediaListEntry.media.isAdult) {
-                cover.get_style_context().add_class("blur");
             } else {
-                cover.get_style_context().remove_class("blur");
+                next_airing_time.visible = false;
+            }
+
+            return Source.CONTINUE;
+        }
+
+        private void update_blur() {
+            if(media_list_entry != null) {
+                var blur = AnilistGtkApp.instance.settings.get_boolean("blur-nsfw");
+                if(blur && media_list_entry.media.isAdult) {
+                    cover.get_style_context().add_class("blur");
+                } else {
+                    cover.get_style_context().remove_class("blur");
+                }
             }
         }
     }
