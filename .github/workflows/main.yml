@@ -34,7 +34,7 @@ jobs:
         with:
           platforms: arm64
 
-      - uses: bilelmoussaoui/flatpak-github-actions@v2
+      - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v4
         with:
           manifest-path: ch.laurinneff.AniList-GTK.json
           bundle: ch.laurinneff.AniList-GTK.flatpak
