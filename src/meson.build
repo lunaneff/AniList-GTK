@@ -79,4 +79,5 @@ anilist_gtk_sources += gnome.compile_resources('anilist_gtk-resources',
 executable('ch.laurinneff.AniList-GTK', anilist_gtk_sources,
   vala_args: vala_args,  dependencies: anilist_gtk_deps,
   install: true,
+  win_subsystem: 'windows'
 )
