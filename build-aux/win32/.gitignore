@@ -1,0 +1,6 @@
+anilist-gtk
+pkg
+src
+rootfs
+*.pkg.tar.zst
+AniList-GTK Installer.exe

@@ -1,0 +1,39 @@
+# Maintainer: Laurin Neff <laurin at laurinneff dot ch>
+
+_realname=anilist-gtk
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+pkgver=1.0
+pkgrel=1
+arch=('any')
+#mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32')
+depends=("${MINGW_PACKAGE_PREFIX}-gtk4"
+         "${MINGW_PACKAGE_PREFIX}-libadwaita"
+         "${MINGW_PACKAGE_PREFIX}-json-glib"
+         "${MINGW_PACKAGE_PREFIX}-libsoup"
+         "${MINGW_PACKAGE_PREFIX}-libgee")
+makedepends=("${MINGW_PACKAGE_PREFIX}-meson"
+             "${MINGW_PACKAGE_PREFIX}-vala"
+             'git')
+source=("${_realname}::git+file://${PWD}/../../.git")
+sha256sums=('SKIP')
+
+build() {
+  mkdir -p build-${MSYSTEM} && cd build-${MSYSTEM}
+
+  MSYS2_ARG_CONV_EXCL="--prefix=" \
+    meson \
+      --prefix="${MINGW_PREFIX}" \
+      --wrap-mode=nodownload \
+      -Dbuild_type=release \
+      --buildtype=plain \
+      ../${_realname}
+
+  meson compile
+}
+
+package() {
+  cd "${srcdir}/build-${MSYSTEM}"
+
+  DESTDIR="${pkgdir}" meson install
+}
